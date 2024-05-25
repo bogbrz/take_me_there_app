@@ -18,9 +18,6 @@ class BottomNavPage extends StatelessWidget {
       builder: (context, child) {
         final _tabRouterIndex = AutoTabsRouter.of(context);
         return Scaffold(
-          appBar: AppBar(
-            title: Text("BottomNavPage"),
-          ),
           body: child,
           bottomNavigationBar: BottomNavigationBar(
               currentIndex: _tabRouterIndex.activeIndex,

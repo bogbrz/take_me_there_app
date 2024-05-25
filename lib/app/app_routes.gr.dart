@@ -9,11 +9,13 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i6;
+import 'package:flutter/cupertino.dart' as _i7;
 import 'package:take_me_there_app/bottom_nav_page.dart' as _i1;
 import 'package:take_me_there_app/features/pages/history_page.dart' as _i2;
 import 'package:take_me_there_app/features/pages/home_page.dart' as _i3;
 import 'package:take_me_there_app/features/pages/login_page.dart' as _i4;
-import 'package:take_me_there_app/features/pages/user_page/user_page.dart' as _i5;
+import 'package:take_me_there_app/features/pages/user_page/user_page.dart'
+    as _i5;
 
 abstract class $AppRouter extends _i6.RootStackRouter {
   $AppRouter({super.navigatorKey});
@@ -33,9 +35,11 @@ abstract class $AppRouter extends _i6.RootStackRouter {
       );
     },
     HomePage.name: (routeData) {
+      final args =
+          routeData.argsAs<HomePageArgs>(orElse: () => const HomePageArgs());
       return _i6.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i3.HomePage(),
+        child: _i3.HomePage(key: args.key),
       );
     },
     LoginPage.name: (routeData) {
@@ -83,16 +87,31 @@ class HistoryPage extends _i6.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.HomePage]
-class HomePage extends _i6.PageRouteInfo<void> {
-  const HomePage({List<_i6.PageRouteInfo>? children})
-      : super(
+class HomePage extends _i6.PageRouteInfo<HomePageArgs> {
+  HomePage({
+    _i7.Key? key,
+    List<_i6.PageRouteInfo>? children,
+  }) : super(
           HomePage.name,
+          args: HomePageArgs(key: key),
           initialChildren: children,
         );
 
   static const String name = 'HomePage';
 
-  static const _i6.PageInfo<void> page = _i6.PageInfo<void>(name);
+  static const _i6.PageInfo<HomePageArgs> page =
+      _i6.PageInfo<HomePageArgs>(name);
+}
+
+class HomePageArgs {
+  const HomePageArgs({this.key});
+
+  final _i7.Key? key;
+
+  @override
+  String toString() {
+    return 'HomePageArgs{key: $key}';
+  }
 }
 
 /// generated route for

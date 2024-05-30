@@ -17,30 +17,35 @@ class UserPage extends HookConsumerWidget {
     final user = ref.watch(userProvider);
     return ProviderScope(
       child: Scaffold(
+          appBar: AppBar(
+            actions: [
+              IconButton(onPressed: () {}, icon: Icon(Icons.logout_outlined))
+            ],
+          ),
           body: ListView(
-        children: [
-          CircleAvatar(),
-          Center(
-            child: Text("${user.name} ${user.surname}"),
-          ),
-          Center(
-            child: Text("${user.email}"),
-          ),
-          Center(
-            child: Text("${user.isVerifed}"),
-          ),
-          Center(
-            child: TextField(
-              controller: newNameController,
-              decoration: InputDecoration(labelText: "New Name"),
-              onSubmitted: (value) {
-                ref.read(userProvider.notifier).edit(name: value);
-                newNameController.clear();
-              },
-            ),
-          )
-        ],
-      )),
+            children: [
+              CircleAvatar(),
+              Center(
+                child: Text("${user.name} ${user.surname}"),
+              ),
+              Center(
+                child: Text("${user.email}"),
+              ),
+              Center(
+                child: Text("${user.isVerifed}"),
+              ),
+              Center(
+                child: TextField(
+                  controller: newNameController,
+                  decoration: InputDecoration(labelText: "New Name"),
+                  onSubmitted: (value) {
+                    ref.read(userProvider.notifier).edit(name: value);
+                    newNameController.clear();
+                  },
+                ),
+              )
+            ],
+          )),
     );
   }
 }

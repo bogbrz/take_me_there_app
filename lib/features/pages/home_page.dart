@@ -60,6 +60,7 @@ class HomePage extends StatelessWidget {
         Expanded(
           child: GoogleMap(
             mapType: MapType.normal,
+            myLocationEnabled: true,
             myLocationButtonEnabled: true,
             initialCameraPosition: googlePlexInitialPosition,
             zoomControlsEnabled: true,
@@ -108,7 +109,7 @@ class SearchBarWidget extends HookConsumerWidget {
     });
 
     return Container(
-      height: MediaQuery.of(context).size.height * 0.27,
+      height: MediaQuery.of(context).size.height * 0.3,
       decoration: BoxDecoration(
           color: Color.fromARGB(173, 0, 0, 0),
           borderRadius: BorderRadius.circular(10)),
@@ -116,7 +117,7 @@ class SearchBarWidget extends HookConsumerWidget {
       margin: EdgeInsets.symmetric(
           horizontal: MediaQuery.of(context).size.width * 0.08,
           vertical: MediaQuery.of(context).size.width * 0.025),
-      child: Column(
+      child: ListView(
         children: [
           widgetContetController.value == 1
               ? Align(
@@ -129,8 +130,8 @@ class SearchBarWidget extends HookConsumerWidget {
                 )
               : SizedBox.shrink(),
           Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+            child: ListView(
+              shrinkWrap: true,
               children: [
                 if (widgetContetController.value == 0) ...[
                   Column(

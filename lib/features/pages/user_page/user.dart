@@ -21,6 +21,8 @@ class User {
 }
 
 class UserProfile extends Notifier<User> {
+
+  
   @override
   User build() {
     return User(

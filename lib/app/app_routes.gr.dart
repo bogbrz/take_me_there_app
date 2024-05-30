@@ -10,6 +10,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i6;
 import 'package:flutter/cupertino.dart' as _i7;
+import 'package:flutter/foundation.dart' as _i8;
 import 'package:take_me_there_app/bottom_nav_page.dart' as _i1;
 import 'package:take_me_there_app/features/pages/history_page.dart' as _i2;
 import 'package:take_me_there_app/features/pages/home_page.dart' as _i3;
@@ -43,9 +44,11 @@ abstract class $AppRouter extends _i6.RootStackRouter {
       );
     },
     LoginPage.name: (routeData) {
+      final args =
+          routeData.argsAs<LoginPageArgs>(orElse: () => const LoginPageArgs());
       return _i6.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i4.LoginPage(),
+        child: _i4.LoginPage(key: args.key),
       );
     },
     UserPage.name: (routeData) {
@@ -116,16 +119,31 @@ class HomePageArgs {
 
 /// generated route for
 /// [_i4.LoginPage]
-class LoginPage extends _i6.PageRouteInfo<void> {
-  const LoginPage({List<_i6.PageRouteInfo>? children})
-      : super(
+class LoginPage extends _i6.PageRouteInfo<LoginPageArgs> {
+  LoginPage({
+    _i8.Key? key,
+    List<_i6.PageRouteInfo>? children,
+  }) : super(
           LoginPage.name,
+          args: LoginPageArgs(key: key),
           initialChildren: children,
         );
 
   static const String name = 'LoginPage';
 
-  static const _i6.PageInfo<void> page = _i6.PageInfo<void>(name);
+  static const _i6.PageInfo<LoginPageArgs> page =
+      _i6.PageInfo<LoginPageArgs>(name);
+}
+
+class LoginPageArgs {
+  const LoginPageArgs({this.key});
+
+  final _i8.Key? key;
+
+  @override
+  String toString() {
+    return 'LoginPageArgs{key: $key}';
+  }
 }
 
 /// generated route for

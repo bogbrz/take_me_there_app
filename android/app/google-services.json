@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "772106314988",
+    "project_id": "take-me-there-app",
+    "storage_bucket": "take-me-there-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:772106314988:android:ba802e987e6fd17998f1c9",
+        "android_client_info": {
+          "package_name": "com.example.take_me_there_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBrQ77yYjMBMr-DPZ2fA4a_CEI6n0ODdaM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

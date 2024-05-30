@@ -9,13 +9,15 @@ class AppRouter extends $AppRouter {
         // of the replaceInRouteName property
 
         AutoRoute(
-          page: LoginPage.page,
-          initial: true,
+          page: LoginPage.page,   initial: true,
         ),
+
         AutoRoute(page: BottomNavPage.page, children: [
           AutoRoute(page: HistoryPage.page),
           AutoRoute(page: UserPage.page),
-          AutoRoute(page: HomePage.page)
+          AutoRoute(page: HomePage.page),
         ]),
+
+      
       ];
 }

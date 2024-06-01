@@ -17,6 +17,20 @@ class LoginController extends StateNotifier<LoginState> {
       state = LoginStateError(e.toString());
     }
   }
+
+  void createAccount(
+      {required String email,
+      required String password,
+      required String username}) async {
+    state = LoginStateLoading();
+    try {
+      ref.read(authRepositoryProvider).createUserWithEmailAndPassword(
+          email: email, password: password, username: username);
+      state = LoginStateSuccess();
+    } catch (e) {
+      state = LoginStateError(e.toString());
+    }
+  }
 }
 
 final loginControllerProvider =

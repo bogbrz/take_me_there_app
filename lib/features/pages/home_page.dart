@@ -13,7 +13,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:take_me_there_app/map_config/google_maps_dependecy.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-@RoutePage()
+
 class HomePage extends StatelessWidget {
   HomePage({super.key});
   final Completer<GoogleMapController> _controller =

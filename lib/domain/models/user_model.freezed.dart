@@ -16,7 +16,9 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$UserModel {
-  User? get user => throw _privateConstructorUsedError;
+  String get email => throw _privateConstructorUsedError;
+  String get username => throw _privateConstructorUsedError;
+  String get pictureUrl => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $UserModelCopyWith<UserModel> get copyWith =>
@@ -28,7 +30,7 @@ abstract class $UserModelCopyWith<$Res> {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) then) =
       _$UserModelCopyWithImpl<$Res, UserModel>;
   @useResult
-  $Res call({User? user});
+  $Res call({String email, String username, String pictureUrl});
 }
 
 /// @nodoc
@@ -44,13 +46,23 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? user = freezed,
+    Object? email = null,
+    Object? username = null,
+    Object? pictureUrl = null,
   }) {
     return _then(_value.copyWith(
-      user: freezed == user
-          ? _value.user
-          : user // ignore: cast_nullable_to_non_nullable
-              as User?,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      username: null == username
+          ? _value.username
+          : username // ignore: cast_nullable_to_non_nullable
+              as String,
+      pictureUrl: null == pictureUrl
+          ? _value.pictureUrl
+          : pictureUrl // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -63,7 +75,7 @@ abstract class _$$UserModelImplCopyWith<$Res>
       __$$UserModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({User? user});
+  $Res call({String email, String username, String pictureUrl});
 }
 
 /// @nodoc
@@ -77,13 +89,23 @@ class __$$UserModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? user = freezed,
+    Object? email = null,
+    Object? username = null,
+    Object? pictureUrl = null,
   }) {
     return _then(_$UserModelImpl(
-      user: freezed == user
-          ? _value.user
-          : user // ignore: cast_nullable_to_non_nullable
-              as User?,
+      email: null == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      username: null == username
+          ? _value.username
+          : username // ignore: cast_nullable_to_non_nullable
+              as String,
+      pictureUrl: null == pictureUrl
+          ? _value.pictureUrl
+          : pictureUrl // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -91,14 +113,19 @@ class __$$UserModelImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$UserModelImpl implements _UserModel {
-  _$UserModelImpl({required this.user});
+  _$UserModelImpl(
+      {required this.email, required this.username, required this.pictureUrl});
 
   @override
-  final User? user;
+  final String email;
+  @override
+  final String username;
+  @override
+  final String pictureUrl;
 
   @override
   String toString() {
-    return 'UserModel(user: $user)';
+    return 'UserModel(email: $email, username: $username, pictureUrl: $pictureUrl)';
   }
 
   @override
@@ -106,11 +133,15 @@ class _$UserModelImpl implements _UserModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$UserModelImpl &&
-            (identical(other.user, user) || other.user == user));
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.username, username) ||
+                other.username == username) &&
+            (identical(other.pictureUrl, pictureUrl) ||
+                other.pictureUrl == pictureUrl));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, user);
+  int get hashCode => Object.hash(runtimeType, email, username, pictureUrl);
 
   @JsonKey(ignore: true)
   @override
@@ -120,10 +151,17 @@ class _$UserModelImpl implements _UserModel {
 }
 
 abstract class _UserModel implements UserModel {
-  factory _UserModel({required final User? user}) = _$UserModelImpl;
+  factory _UserModel(
+      {required final String email,
+      required final String username,
+      required final String pictureUrl}) = _$UserModelImpl;
 
   @override
-  User? get user;
+  String get email;
+  @override
+  String get username;
+  @override
+  String get pictureUrl;
   @override
   @JsonKey(ignore: true)
   _$$UserModelImplCopyWith<_$UserModelImpl> get copyWith =>

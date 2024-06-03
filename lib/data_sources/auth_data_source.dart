@@ -42,16 +42,17 @@ class AuthDataSource {
     }
   }
 
-  Future<UserModel> getUser() async {
-    final user = auth.currentUser;
-    if (user == null) {
-      throw Exception("User not logged in");
-    } else {
-      return UserModel(
-          email: user.email.toString(),
-          username: user.displayName!,
-          pictureUrl: "pictureUrl");
-    }
+  Future<User?> getUser() async {
+    print("DATA SOURCE ${auth.currentUser}");
+    return auth.currentUser;
+    ;
+
+    // if (user == null) {
+    //   throw Exception("User not logged in");
+    // } else {
+    //   return UserModel(
+    //       email: "dupa", username: user.displayName!, pictureUrl: "pictureUrl");
+    // }
   }
 
   void signOut() {

@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:take_me_there_app/bottom_nav_page.dart';
 import 'package:take_me_there_app/features/pages/history_page.dart';
-import 'package:take_me_there_app/features/pages/home_page.dart';
+import 'package:take_me_there_app/features/pages/home_page/home_page.dart';
 import 'package:take_me_there_app/features/pages/login_page/login_page.dart';
 import 'package:take_me_there_app/features/pages/user_page/user_page.dart';
 

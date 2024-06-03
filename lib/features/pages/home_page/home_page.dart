@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,12 +11,14 @@ import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:take_me_there_app/features/pages/home_page/home_controller.dart';
 import 'package:take_me_there_app/map_config/google_maps_dependecy.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:take_me_there_app/providers/auth_provider.dart';
 
-
-class HomePage extends StatelessWidget {
+class HomePage extends HookConsumerWidget {
   HomePage({super.key});
+
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
   GoogleMapController? controllerGoogleMap;
@@ -54,7 +57,9 @@ class HomePage extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(userStreamProvider).value![0];
+
     return Scaffold(
       body: Stack(children: [
         Expanded(
@@ -72,9 +77,28 @@ class HomePage extends StatelessWidget {
             },
           ),
         ),
-        Align(
-          alignment: FractionalOffset.bottomCenter,
-          child: SearchBarWidget(),
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 10, left: 60, right: 60),
+              child: (ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.blueAccent,
+                ),
+                onPressed: () {
+                  ref
+                      .read(locationControllerProvider.notifier)
+                      .updateLocation(userId: user.id);
+                },
+                child: Text("Take me there"),
+              )),
+            ),
+            Align(
+              alignment: FractionalOffset.bottomCenter,
+              child: SearchBarWidget(),
+            ),
+          ],
         )
       ]),
     );
@@ -169,7 +193,7 @@ class SearchBarWidget extends HookConsumerWidget {
                                 },
                           child: Text("Take me there"),
                         )),
-                      )
+                      ),
                     ],
                   ),
                 ] else ...[

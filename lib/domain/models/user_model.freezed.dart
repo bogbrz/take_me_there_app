@@ -18,7 +18,10 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$UserModel {
   String get email => throw _privateConstructorUsedError;
   String get username => throw _privateConstructorUsedError;
-  String get pictureUrl => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
+  String get phoneNumber => throw _privateConstructorUsedError;
+  String get userType => throw _privateConstructorUsedError;
+  GeoPoint? get geoPoint => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $UserModelCopyWith<UserModel> get copyWith =>
@@ -30,7 +33,13 @@ abstract class $UserModelCopyWith<$Res> {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) then) =
       _$UserModelCopyWithImpl<$Res, UserModel>;
   @useResult
-  $Res call({String email, String username, String pictureUrl});
+  $Res call(
+      {String email,
+      String username,
+      String id,
+      String phoneNumber,
+      String userType,
+      GeoPoint? geoPoint});
 }
 
 /// @nodoc
@@ -48,7 +57,10 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
   $Res call({
     Object? email = null,
     Object? username = null,
-    Object? pictureUrl = null,
+    Object? id = null,
+    Object? phoneNumber = null,
+    Object? userType = null,
+    Object? geoPoint = freezed,
   }) {
     return _then(_value.copyWith(
       email: null == email
@@ -59,10 +71,22 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
               as String,
-      pictureUrl: null == pictureUrl
-          ? _value.pictureUrl
-          : pictureUrl // ignore: cast_nullable_to_non_nullable
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
               as String,
+      phoneNumber: null == phoneNumber
+          ? _value.phoneNumber
+          : phoneNumber // ignore: cast_nullable_to_non_nullable
+              as String,
+      userType: null == userType
+          ? _value.userType
+          : userType // ignore: cast_nullable_to_non_nullable
+              as String,
+      geoPoint: freezed == geoPoint
+          ? _value.geoPoint
+          : geoPoint // ignore: cast_nullable_to_non_nullable
+              as GeoPoint?,
     ) as $Val);
   }
 }
@@ -75,7 +99,13 @@ abstract class _$$UserModelImplCopyWith<$Res>
       __$$UserModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String email, String username, String pictureUrl});
+  $Res call(
+      {String email,
+      String username,
+      String id,
+      String phoneNumber,
+      String userType,
+      GeoPoint? geoPoint});
 }
 
 /// @nodoc
@@ -91,7 +121,10 @@ class __$$UserModelImplCopyWithImpl<$Res>
   $Res call({
     Object? email = null,
     Object? username = null,
-    Object? pictureUrl = null,
+    Object? id = null,
+    Object? phoneNumber = null,
+    Object? userType = null,
+    Object? geoPoint = freezed,
   }) {
     return _then(_$UserModelImpl(
       email: null == email
@@ -102,10 +135,22 @@ class __$$UserModelImplCopyWithImpl<$Res>
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
               as String,
-      pictureUrl: null == pictureUrl
-          ? _value.pictureUrl
-          : pictureUrl // ignore: cast_nullable_to_non_nullable
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
               as String,
+      phoneNumber: null == phoneNumber
+          ? _value.phoneNumber
+          : phoneNumber // ignore: cast_nullable_to_non_nullable
+              as String,
+      userType: null == userType
+          ? _value.userType
+          : userType // ignore: cast_nullable_to_non_nullable
+              as String,
+      geoPoint: freezed == geoPoint
+          ? _value.geoPoint
+          : geoPoint // ignore: cast_nullable_to_non_nullable
+              as GeoPoint?,
     ));
   }
 }
@@ -114,18 +159,29 @@ class __$$UserModelImplCopyWithImpl<$Res>
 
 class _$UserModelImpl implements _UserModel {
   _$UserModelImpl(
-      {required this.email, required this.username, required this.pictureUrl});
+      {required this.email,
+      required this.username,
+      required this.id,
+      required this.phoneNumber,
+      required this.userType,
+      required this.geoPoint});
 
   @override
   final String email;
   @override
   final String username;
   @override
-  final String pictureUrl;
+  final String id;
+  @override
+  final String phoneNumber;
+  @override
+  final String userType;
+  @override
+  final GeoPoint? geoPoint;
 
   @override
   String toString() {
-    return 'UserModel(email: $email, username: $username, pictureUrl: $pictureUrl)';
+    return 'UserModel(email: $email, username: $username, id: $id, phoneNumber: $phoneNumber, userType: $userType, geoPoint: $geoPoint)';
   }
 
   @override
@@ -136,12 +192,18 @@ class _$UserModelImpl implements _UserModel {
             (identical(other.email, email) || other.email == email) &&
             (identical(other.username, username) ||
                 other.username == username) &&
-            (identical(other.pictureUrl, pictureUrl) ||
-                other.pictureUrl == pictureUrl));
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.phoneNumber, phoneNumber) ||
+                other.phoneNumber == phoneNumber) &&
+            (identical(other.userType, userType) ||
+                other.userType == userType) &&
+            (identical(other.geoPoint, geoPoint) ||
+                other.geoPoint == geoPoint));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, email, username, pictureUrl);
+  int get hashCode => Object.hash(
+      runtimeType, email, username, id, phoneNumber, userType, geoPoint);
 
   @JsonKey(ignore: true)
   @override
@@ -154,14 +216,23 @@ abstract class _UserModel implements UserModel {
   factory _UserModel(
       {required final String email,
       required final String username,
-      required final String pictureUrl}) = _$UserModelImpl;
+      required final String id,
+      required final String phoneNumber,
+      required final String userType,
+      required final GeoPoint? geoPoint}) = _$UserModelImpl;
 
   @override
   String get email;
   @override
   String get username;
   @override
-  String get pictureUrl;
+  String get id;
+  @override
+  String get phoneNumber;
+  @override
+  String get userType;
+  @override
+  GeoPoint? get geoPoint;
   @override
   @JsonKey(ignore: true)
   _$$UserModelImplCopyWith<_$UserModelImpl> get copyWith =>

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:take_me_there_app/app/core/enums.dart';
 import 'package:take_me_there_app/features/pages/login_page/login_state.dart';
 import 'package:take_me_there_app/providers/auth_provider.dart';
 
@@ -23,11 +24,11 @@ class LoginController extends StateNotifier<LoginState> {
   void createAccount(
       {required String email,
       required String password,
-      required String username}) async {
+      required String username, required UserType userType,required String phoneNumber}) async {
     state = LoginStateLoading();
     try {
       ref.read(authDataSourceProvider).createUserWithEmailAndPassword(
-          email: email, password: password, username: username);
+          email: email, password: password, username: username, userType: userType, phoneNumber:phoneNumber  );
       state = LoginStateSuccess();
     } catch (e) {
       state = LoginStateError(e.toString());

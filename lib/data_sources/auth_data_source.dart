@@ -1,24 +1,42 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
+import 'package:take_me_there_app/app/core/enums.dart';
 import 'package:take_me_there_app/domain/models/user_model.dart';
 
 @injectable
 class AuthDataSource {
   final auth = FirebaseAuth.instance;
+  final dataBase = FirebaseFirestore.instance;
 
   Stream<User?> authStateChanges() {
     return auth.authStateChanges();
   }
 
-  Future<User?> createUserWithEmailAndPassword({
-    required String email,
-    required String password,
-    required String username,
-  }) async {
+  Future<User?> createUserWithEmailAndPassword(
+      {required String email,
+      required String password,
+      required String username,
+      required UserType userType,
+      required String phoneNumber,
+      required}) async {
     try {
-      final result = await auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      auth.currentUser!.updateDisplayName(username);
+      final result = await auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((_) async {
+        await auth.currentUser!.updateDisplayName(username);
+      }).then((_) {
+        dataBase.collection("users").add({
+          "username": auth.currentUser!.displayName,
+          "userType": userType.toString(),
+          "email": email,
+          "uid": auth.currentUser!.uid,
+          "phoneNumber": phoneNumber,
+          "localization": GeoPoint(0, 0),
+        });
+      });
+
       return result.user;
     } catch (e) {
       throw Exception("Error");
@@ -42,10 +60,31 @@ class AuthDataSource {
     }
   }
 
+  Future<void> updateLocalization(
+      {required GeoPoint location, required String userId}) {
+    return FirebaseFirestore.instance.collection("users").doc(userId).update({
+      "localization": location,
+    });
+  }
+
+  Stream<List<UserModel>> getUserById() {
+    return FirebaseFirestore.instance.collection("users").snapshots().map(
+        (snapshot) => snapshot.docs
+            .map((doc) => UserModel(
+                email: doc["email"],
+                username: doc["username"],
+                id: doc.id,
+                phoneNumber: doc["phoneNumber"],
+                userType: doc["userType"],
+                geoPoint: doc["localization"]))
+            .where((element) =>
+                element.email.toString() == auth.currentUser!.email.toString())
+            .toList());
+  }
+
   Future<User?> getUser() async {
     print("DATA SOURCE ${auth.currentUser}");
     return auth.currentUser;
-    ;
 
     // if (user == null) {
     //   throw Exception("User not logged in");

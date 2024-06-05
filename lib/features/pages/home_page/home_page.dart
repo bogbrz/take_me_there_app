@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -56,10 +57,61 @@ class HomePage extends HookConsumerWidget {
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
   }
 
+  final LatLng locationOne = LatLng(37.42796133580664, -122.085749655962);
+  final LatLng locationTwo = LatLng(37.43296265331129, -122.08832357078792);
+  Map<PolylineId, Polyline> polylines = {};
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userStreamProvider).value![0];
+    final LatLng locationOne =
+        LatLng(user.geoPoint!.latitude, user.geoPoint!.longitude);
+    final LatLng locationTwo = LatLng(38.43296265331129, -121.08832357078792);
+    Future<List<LatLng>> fetchPolylinePoints() async {
+      final polylinePoints = PolylinePoints();
+      final result = await polylinePoints.getRouteBetweenCoordinates(
+          key,
+          PointLatLng(user.geoPoint!.latitude, user.geoPoint!.longitude),
+          PointLatLng(locationTwo.latitude, locationTwo.longitude));
 
+      return result.points
+          .map((point) => LatLng(point.latitude, point.longitude))
+          .toList();
+    }
+
+    Future<Polyline> generatePolylinesFromPoints(
+        List<LatLng> polylineCoordinates) async {
+      return Polyline(
+          polylineId: PolylineId("1"),
+          width: 5,
+          color: Colors.yellow,
+          points: polylineCoordinates);
+    }
+
+    // Future<void> initilazeMap() async {
+    //   final points = await fetchPolylinePoints();
+    //   generatePolylinesFromPoints(points);
+    // }
+    Future<void> initilazeMap() async {
+      final points = await fetchPolylinePoints();
+      generatePolylinesFromPoints(points);
+    }
+
+    final polylinesState = useState<Map<PolylineId, Polyline>>({});
+    useEffect(() {
+      ref
+          .read(locationControllerProvider.notifier)
+          .updateLocation(userId: user.id);
+      fetchPolylinePoints().then((points) {
+        if (points.isNotEmpty) {
+          generatePolylinesFromPoints(points).then((polyline) {
+            polylinesState.value = {PolylineId("1"): polyline};
+          });
+        }
+      });
+
+      return;
+    });
     return Scaffold(
       body: Stack(children: [
         Expanded(
@@ -75,30 +127,22 @@ class HomePage extends HookConsumerWidget {
               _controller.complete(controllerGoogleMap);
               getCurrentLiveLocationOfUser();
             },
+            markers: {
+              Marker(
+                  markerId: MarkerId("value1"),
+                  icon: BitmapDescriptor.defaultMarker,
+                  position: locationOne),
+              Marker(
+                  markerId: MarkerId("value2"),
+                  icon: BitmapDescriptor.defaultMarker,
+                  position: locationTwo),
+            },
+            polylines: Set<Polyline>.of(polylinesState.value.values),
           ),
         ),
-        Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, left: 60, right: 60),
-              child: (ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.blueAccent,
-                ),
-                onPressed: () {
-                  ref
-                      .read(locationControllerProvider.notifier)
-                      .updateLocation(userId: user.id);
-                },
-                child: Text("Take me there"),
-              )),
-            ),
-            Align(
-              alignment: FractionalOffset.bottomCenter,
-              child: SearchBarWidget(),
-            ),
-          ],
+        Align(
+          alignment: FractionalOffset.bottomCenter,
+          child: SearchBarWidget(),
         )
       ]),
     );

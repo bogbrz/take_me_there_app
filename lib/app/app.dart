@@ -4,7 +4,6 @@ import 'package:take_me_there_app/app/app_routes.dart';
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
-  final _appRouter = AppRouter();
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
@@ -13,7 +12,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.dark(),
         useMaterial3: true,
       ),
-      routerConfig: _appRouter.config(),
+      routerConfig: AppRouter.router,
     );
   }
 }

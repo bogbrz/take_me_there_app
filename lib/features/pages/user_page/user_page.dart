@@ -1,46 +1,40 @@
-import 'package:auto_route/auto_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:take_me_there_app/features/pages/user_page/user.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:take_me_there_app/domain/models/user_model.dart';
+import 'package:take_me_there_app/features/pages/login_page/login_controller.dart';
+import 'package:take_me_there_app/features/pages/user_page/user_contoller.dart';
+import 'package:take_me_there_app/providers/auth_provider.dart';
 
-final userProvider = NotifierProvider<UserProfile, User>(UserProfile.new);
-
-@RoutePage()
 class UserPage extends HookConsumerWidget {
-  const UserPage({super.key});
+  UserPage({super.key});
 
+  final userControllerProvider =
+      AsyncNotifierProvider<UserTest, UserModel>(UserTest.new);
+
+  final userStreamProvider =
+      StreamProvider((ref) => ref.watch(authDataSourceProvider).getUserById());
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final newNameController = useTextEditingController();
-    final user = ref.watch(userProvider);
-    return ProviderScope(
-      child: Scaffold(
-          body: ListView(
-        children: [
-          CircleAvatar(),
-          Center(
-            child: Text("${user.name} ${user.surname}"),
-          ),
-          Center(
-            child: Text("${user.email}"),
-          ),
-          Center(
-            child: Text("${user.isVerifed}"),
-          ),
-          Center(
-            child: TextField(
-              controller: newNameController,
-              decoration: InputDecoration(labelText: "New Name"),
-              onSubmitted: (value) {
-                ref.read(userProvider.notifier).edit(name: value);
-                newNameController.clear();
-              },
-            ),
-          )
+    final user = ref.watch(userControllerProvider);
+    final streamUser = ref.watch(userStreamProvider);
+
+    print(FirebaseAuth.instance.currentUser);
+
+    return Scaffold(
+        body: ListView(
+      children: [
+        for (final userStream in streamUser.value!) ...[
+          Text(
+              '''${userStream.username}\n ${userStream.email} \n ${userStream.phoneNumber}''')
         ],
-      )),
-    );
+        CircleAvatar(),
+        IconButton(
+            onPressed: () {
+              ref.read(loginControllerProvider.notifier).signOut();
+            },
+            icon: Icon(Icons.logout))
+      ],
+    ));
   }
 }

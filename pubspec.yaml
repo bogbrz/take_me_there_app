@@ -53,6 +53,9 @@ dependencies:
   go_router: ^14.1.4
   flutter_polyline_points: ^2.0.0
   
+  dio: ^5.4.3+1
+  retrofit: ^4.1.0
+  
   
   
 
@@ -71,6 +74,7 @@ dev_dependencies:
   freezed: ^2.5.2
   json_serializable: ^6.8.0
   injectable_generator: ^2.6.1
+  retrofit_generator: ^8.1.0
   
 
 # For information on the generic Dart part of this file, see the

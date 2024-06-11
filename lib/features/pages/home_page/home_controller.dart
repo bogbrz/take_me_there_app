@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:take_me_there_app/domain/models/place_suggestion_model.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_state.dart';
 import 'package:take_me_there_app/providers/auth_provider.dart';
+import 'package:take_me_there_app/providers/google_places_provider.dart';
 
 class HomeController extends StreamNotifier {
   @override
@@ -31,4 +33,18 @@ class LocationController extends StateNotifier<HomeState> {
 
 final locationControllerProvider = StateNotifierProvider((ref) {
   return LocationController(ref);
+});
+
+class SuggestionControler extends StateNotifier<HomeState> {
+  SuggestionControler(this.ref) : super(const HomeStateInitial());
+  final Ref ref;
+  Future<Welcome> getSuggestions({required String adress}) async {
+    final results =
+        await ref.read(googlePlacesDataSourceProvider).getSuggestions(adress);
+    return results;
+  }
+}
+
+final suggestionControlerProvider = StateNotifierProvider((ref) {
+  return SuggestionControler(ref);
 });

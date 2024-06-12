@@ -11,10 +11,8 @@
 import 'package:dio/dio.dart' as _i4;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
-import 'package:take_me_there_app/app/injection_container.dart' as _i6;
+import 'package:take_me_there_app/app/injection_container.dart' as _i5;
 import 'package:take_me_there_app/data_sources/auth_data_source.dart' as _i3;
-import 'package:take_me_there_app/data_sources/google_places_data_source.dart'
-    as _i5;
 
 extension GetItInjectableX on _i1.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -35,10 +33,8 @@ extension GetItInjectableX on _i1.GetIt {
     );
     gh.lazySingleton<_i4.Dio>(
         () => registerModule.dio(gh<String>(instanceName: 'BaseUrl')));
-    gh.factory<_i5.GooglePlacesDataSource>(
-        () => _i5.GooglePlacesDataSource(gh<_i4.Dio>()));
     return this;
   }
 }
 
-class _$RegisterModule extends _i6.RegisterModule {}
+class _$RegisterModule extends _i5.RegisterModule {}

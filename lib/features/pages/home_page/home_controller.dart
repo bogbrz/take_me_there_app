@@ -35,16 +35,32 @@ final locationControllerProvider = StateNotifierProvider((ref) {
   return LocationController(ref);
 });
 
-class SuggestionControler extends StateNotifier<HomeState> {
-  SuggestionControler(this.ref) : super(const HomeStateInitial());
+class SuggestionController extends StateNotifier<HomeState> {
+  SuggestionController(this.ref) : super(const HomeStateInitial());
+
   final Ref ref;
-  Future<Welcome> getSuggestions({required String adress}) async {
+
+  Future<List<String>?> getSuggestions({required String address}) async {
+    state = const HomeStateLoading();
+
     final results =
-        await ref.read(googlePlacesDataSourceProvider).getSuggestions(adress);
-    return results;
+        await ref.read(googlePlacesDataSourceProvider).getSuggestions(address);
+    if (results == null) {
+      print("NULLL");
+      return null;
+    }
+    final welomeModel = Welcome.fromJson(results);
+    final predicitons = welomeModel.predictions;
+    final descriptions = <String>[];
+    for (final prediction in predicitons) {
+      descriptions.add(prediction.description);
+      print("DESCRIPTION $descriptions");
+    }
+    return descriptions;
   }
 }
 
-final suggestionControlerProvider = StateNotifierProvider((ref) {
-  return SuggestionControler(ref);
+final suggestionControllerProvider =
+    StateNotifierProvider<SuggestionController, HomeState>((ref) {
+  return SuggestionController(ref);
 });

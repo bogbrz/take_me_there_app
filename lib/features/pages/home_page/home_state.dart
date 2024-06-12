@@ -22,10 +22,12 @@ class HomeStateLoading extends HomeState {
 }
 
 class HomeStateSuccess extends HomeState {
-  const HomeStateSuccess();
+   final List<String> suggestions;
+
+  const HomeStateSuccess(this.suggestions);
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [suggestions];
 }
 
 class HomeStateError extends HomeState {

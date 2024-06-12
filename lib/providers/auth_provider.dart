@@ -13,3 +13,6 @@ final userProvider = Provider((ref) {
 final authStateProvider = StreamProvider<User?>((ref) {
   return ref.read(authDataSourceProvider).authStateChanges();
 });
+
+
+

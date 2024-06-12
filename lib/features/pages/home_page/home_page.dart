@@ -162,6 +162,7 @@ class SearchBarWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final places = ref.watch(suggestionControllerProvider.notifier);
     final pickUpLocationController = useTextEditingController();
     final destinationController = useTextEditingController();
     final widgetContetController = useState(0);
@@ -170,9 +171,8 @@ class SearchBarWidget extends HookConsumerWidget {
         useState<double?>(MediaQuery.of(context).size.height * 0.25);
     final _focusNode = useFocusNode();
     final _adress = useState<String?>(null);
-    final _response = useState<Response?>(null);
-
-    final _listOfSuggestions = useState<List<dynamic>>([]);
+    final _suggestions = useState<List<String>?>([]);
+    final _isSearching = useState<bool>(false);
 
     bool areFieldsEmpty() {
       return pickUpLocationController.text.toString().isEmpty ||
@@ -180,23 +180,30 @@ class SearchBarWidget extends HookConsumerWidget {
     }
 
     final _token = useState<String>("37465");
-    void makeSuggestion(String adress) async {
-      String googlePlacesApiKey = key;
-      String groundURL =
-          'https://maps.googleapis.com/maps/api/place/autocomplete/json';
-      String request =
-          '$groundURL?input=$adress&key=$googlePlacesApiKey&sessiontoken=$_token';
+    // void makeSuggestion(String adress) async {
+    //   String googlePlacesApiKey = key;
+    //   String groundURL =
+    //       'https://maps.googleapis.com/maps/api/place/autocomplete/json';
+    //   String request =
+    //       '$groundURL?input=$adress&key=$googlePlacesApiKey&sessiontoken=$_token';
 
-      _response.value = await Dio().get(request);
-    
+    //   _response.value = await Dio().get(request);
 
-    
+    //   print("RESULT DATA : ${_response.value}");
+    // }
+    void suggestionList(String adress) async {
+      final placesList = await places.getSuggestions(address: adress);
+      if (placesList == null) {
+        _suggestions.value = null;
+      } else {
+        _suggestions.value!.addAll(placesList);
+      }
 
-      print("RESULT DATA : ${_response.value}");
+      print("PAGE $placesList");
+      print("LIST ${_suggestions.value}");
     }
 
     useEffect(() {
-     
       pickUpLocationController.addListener(() {
         _areFieldsEmpty.value = areFieldsEmpty();
       });
@@ -240,14 +247,18 @@ class SearchBarWidget extends HookConsumerWidget {
                     onTap: () {
                       _searchBarHeigh.value =
                           MediaQuery.of(context).size.height * 0.8;
+                      _isSearching.value = true;
                     },
-                    onChanged: (value) =>
-                        suggestions(pickUpLocationController.value.text),
+                    onChanged: (value) {
+                      suggestionList(value);
+                      _suggestions.value!.clear();
+                    },
                     onSubmitted: (value) {
                       value.isEmpty
                           ? _searchBarHeigh.value =
                               MediaQuery.of(context).size.height * 0.25
                           : _focusNode.requestFocus();
+                      _isSearching.value = false;
                     },
                     controller: pickUpLocationController,
                     decoration: InputDecoration(
@@ -256,6 +267,17 @@ class SearchBarWidget extends HookConsumerWidget {
                         border: OutlineInputBorder(),
                         hintText: "Where would you like to be picked up?"),
                   ),
+                  _isSearching.value && pickUpLocationController.text.isNotEmpty
+                      ? SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.2,
+                          child: ListView.builder(
+                              itemCount: _suggestions.value!.length,
+                              itemBuilder: (context, index) {
+                                final suggestion = _suggestions.value![index];
+                                return Text(suggestion);
+                              }),
+                        )
+                      : SizedBox.shrink(),
                   SizedBox(
                     height: 16,
                   ),

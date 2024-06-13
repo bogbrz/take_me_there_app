@@ -26,14 +26,15 @@ class AuthDataSource {
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((_) async {
         await auth.currentUser!.updateDisplayName(username);
-      }).then((_) {
-        dataBase.collection("users").add({
+      }).then((_) async {
+        await dataBase.collection("users").add({
           "username": auth.currentUser!.displayName,
           "userType": userType.toString(),
           "email": email,
           "uid": auth.currentUser!.uid,
           "phoneNumber": phoneNumber,
           "localization": GeoPoint(0, 0),
+          "destination": GeoPoint(0, 0)
         });
       });
 
@@ -67,6 +68,16 @@ class AuthDataSource {
     });
   }
 
+  Future<void> addPickUpAndDestination(
+      {required GeoPoint location,
+      required String userId,
+      required GeoPoint destination}) {
+    return FirebaseFirestore.instance.collection("users").doc(userId).update({
+      "localization": location,
+      "destination": destination,
+    });
+  }
+
   Stream<List<UserModel>> getUserById() {
     return FirebaseFirestore.instance.collection("users").snapshots().map(
         (snapshot) => snapshot.docs
@@ -76,7 +87,8 @@ class AuthDataSource {
                 id: doc.id,
                 phoneNumber: doc["phoneNumber"],
                 userType: doc["userType"],
-                geoPoint: doc["localization"]))
+                geoPoint: doc["localization"],
+                destination: doc["destination"]))
             .where((element) =>
                 element.email.toString() == auth.currentUser!.email.toString())
             .toList());

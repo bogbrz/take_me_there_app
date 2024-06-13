@@ -16,6 +16,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_controller.dart';
 import 'package:take_me_there_app/features/pages/home_page/search_bar_widget.dart';
+
 import 'package:take_me_there_app/map_config/google_maps_dependecy.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:take_me_there_app/providers/auth_provider.dart';
@@ -61,22 +62,23 @@ class HomePage extends HookConsumerWidget {
         .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
   }
 
-  // final LatLng locationOne = LatLng(37.42796133580664, -122.085749655962);
+  final LatLng locationOne = LatLng(37.42796133580664, -122.085749655962);
   // final LatLng locationTwo = LatLng(37.43296265331129, -122.08832357078792);
   Map<PolylineId, Polyline> polylines = {};
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final user = ref.watch(userStreamProvider).value![0];
-    final LatLng locationOne =
-        LatLng(user.geoPoint!.latitude, user.geoPoint!.longitude);
+    // final user = ref.watch(userStreamProvider).value![0];
+    // final LatLng locationOne =
+    //     LatLng(user.geoPoint!.latitude, user.geoPoint!.longitude);
 
     final LatLng locationTwo = LatLng(37.43296265331129, -122.08832357078792);
     Future<List<LatLng>> fetchPolylinePoints() async {
       final polylinePoints = PolylinePoints();
       final result = await polylinePoints.getRouteBetweenCoordinates(
           key,
-          PointLatLng(user.geoPoint!.latitude, user.geoPoint!.longitude),
+          PointLatLng(locationOne.latitude, locationOne.longitude),
+          // PointLatLng(user.geoPoint!.latitude, user.geoPoint!.longitude),
           PointLatLng(locationTwo.latitude, locationTwo.longitude));
 
       return result.points
@@ -104,9 +106,9 @@ class HomePage extends HookConsumerWidget {
 
     final polylinesState = useState<Map<PolylineId, Polyline>>({});
     useEffect(() {
-      ref
-          .read(locationControllerProvider.notifier)
-          .updateLocation(userId: user.id);
+      // ref
+      //     .read(locationControllerProvider.notifier)
+      //     .updateLocation(userId: user.id);
       fetchPolylinePoints().then((points) {
         if (points.isNotEmpty) {
           generatePolylinesFromPoints(points).then((polyline) {
@@ -118,7 +120,8 @@ class HomePage extends HookConsumerWidget {
       return;
     });
     return Scaffold(
-      body: user.geoPoint == null
+      body: locationOne == null
+          //  user.geoPoint == null
           ? Center(child: CircularProgressIndicator())
           : Stack(children: [
               Positioned.fill(
@@ -155,5 +158,3 @@ class HomePage extends HookConsumerWidget {
     );
   }
 }
-
-

@@ -58,6 +58,23 @@ class SuggestionController extends StateNotifier<HomeState> {
     }
     return descriptions;
   }
+
+  void updateLocation({required String userId}) async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation);
+    GeoPoint geoPoint = GeoPoint(position.latitude, position.longitude);
+    ref
+        .read(authDataSourceProvider)
+        .updateLocalization(location: geoPoint, userId: userId);
+  }
+   void updateDestination({required String userId}) async {
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.bestForNavigation);
+    GeoPoint geoPoint = GeoPoint(position.latitude, position.longitude);
+    ref
+        .read(authDataSourceProvider)
+        .updateLocalization(location: geoPoint, userId: userId);
+  }
 }
 
 final suggestionControllerProvider =

@@ -6,9 +6,11 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_controller.dart';
 
 class SearchBarWidget extends HookConsumerWidget {
-  SearchBarWidget({
+  SearchBarWidget(
+    this.userId, {
     super.key,
   });
+  final String userId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -106,11 +108,12 @@ class SearchBarWidget extends HookConsumerWidget {
                             onTap: () {
                               _searchBarHeigh.value =
                                   MediaQuery.of(context).size.height * 0.8;
-                              _isSearchingPickUp.value = true;
+                              pickUpLocationController.text = "";
+                              // _isSearchingPickUp.value = true;
                             },
                             onChanged: (value) {
-                              suggestionList(value);
-                              _suggestions.value!.clear();
+                              // suggestionList(value);
+                              // _suggestions.value!.clear();
                             },
                             onSubmitted: (value) {
                               value.isEmpty
@@ -130,7 +133,14 @@ class SearchBarWidget extends HookConsumerWidget {
                         ),
                         IconButton(
                             iconSize: 20,
-                            onPressed: () {},
+                            onPressed: () {
+                              places.updateLocation(userId: userId);
+                              pickUpLocationController.text = "";
+                              pickUpLocationController.text =
+                                  "Current Position";
+                              _isSearchingPickUp.value = false;
+                              _focusNode.requestFocus();
+                            },
                             icon: Icon(Icons.my_location))
                       ],
                     ),
@@ -175,12 +185,12 @@ class SearchBarWidget extends HookConsumerWidget {
                               onTap: () {
                                 _searchBarHeigh.value =
                                     MediaQuery.of(context).size.height * 0.8;
-                                _isSearchingDestination.value = true;
-                                _isSearchingPickUp.value = false;
+                                // _isSearchingDestination.value = true;
+                                // _isSearchingPickUp.value = false;
                               },
                               onChanged: (value) {
-                                suggestionList(value);
-                                _suggestions.value!.clear();
+                                // suggestionList(value);
+                                // _suggestions.value!.clear();
                               },
                               onSubmitted: (value) {
                                 _searchBarHeigh.value =

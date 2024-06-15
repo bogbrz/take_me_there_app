@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:take_me_there_app/bottom_nav_page.dart';
 import 'package:take_me_there_app/features/pages/history_page.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_page.dart';
+import 'package:take_me_there_app/features/pages/location_pick_page/location_pick_page.dart';
 import 'package:take_me_there_app/features/pages/login_page/login_page.dart';
 import 'package:take_me_there_app/features/pages/user_page/user_page.dart';
 
@@ -58,9 +59,9 @@ class AppRouter {
             navigatorKey: _sectionCNavigatorKey,
             routes: <RouteBase>[
               GoRoute(
-                path: '/historPage',
+                path: '/locationPickPage',
                 builder: (BuildContext context, GoRouterState state) =>
-                    HistoryPage(),
+                    LocationPickPage(),
               ),
             ],
           ),
@@ -81,6 +82,13 @@ class AppRouter {
         name: "/loginPage",
         builder: (context, state) {
           return LoginPage();
+        },
+      ),
+      GoRoute(
+        path: "/locationPickPage",
+        name: "/locationPickPage",
+        builder: (context, state) {
+          return LocationPickPage();
         },
       ),
     ],

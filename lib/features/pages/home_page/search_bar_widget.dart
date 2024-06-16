@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:take_me_there_app/domain/models/place_model.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_controller.dart';
 
 class SearchBarWidget extends HookConsumerWidget {
@@ -23,7 +24,7 @@ class SearchBarWidget extends HookConsumerWidget {
         useState<double?>(MediaQuery.of(context).size.height * 0.27);
     final _focusNode = useFocusNode();
 
-    final _suggestions = useState<List<String>?>([]);
+    final _suggestions = useState<List<Result>?>([]);
     final _isSearchingPickUp = useState<bool>(false);
     final _isSearchingDestination = useState<bool>(false);
 
@@ -44,14 +45,14 @@ class SearchBarWidget extends HookConsumerWidget {
     //   print("RESULT DATA : ${_response.value}");
     // }
     void suggestionList(String adress) async {
-      final placesList = await places.getSuggestions(address: adress);
-      if (placesList == null) {
+      final listOfResults = await places.getSuggestions(address: adress);
+      if (listOfResults == null) {
         _suggestions.value = null;
       } else {
-        _suggestions.value!.addAll(placesList);
+        _suggestions.value!.addAll(listOfResults);
       }
 
-      print("PAGE $placesList");
+      print("PAGE $listOfResults");
       print("LIST ${_suggestions.value}");
     }
 
@@ -109,11 +110,11 @@ class SearchBarWidget extends HookConsumerWidget {
                               _searchBarHeigh.value =
                                   MediaQuery.of(context).size.height * 0.8;
                               pickUpLocationController.text = "";
-                              // _isSearchingPickUp.value = true;
+                              _isSearchingPickUp.value = true;
                             },
                             onChanged: (value) {
-                              // suggestionList(value);
-                              // _suggestions.value!.clear();
+                              suggestionList(value);
+                              _suggestions.value!.clear();
                             },
                             onSubmitted: (value) {
                               value.isEmpty
@@ -156,13 +157,14 @@ class SearchBarWidget extends HookConsumerWidget {
                                 return InkWell(
                                   onTap: () {
                                     pickUpLocationController.text = "";
-                                    pickUpLocationController.text = suggestion;
+                                    pickUpLocationController.text =
+                                        suggestion.address.streetName;
                                     _isSearchingPickUp.value = false;
                                   },
                                   child: Container(
                                     margin: EdgeInsets.all(2),
                                     color: Color.fromARGB(255, 120, 29, 29),
-                                    child: Text(suggestion),
+                                    child: Text(suggestion.address.streetName),
                                   ),
                                 );
                               }),
@@ -185,12 +187,12 @@ class SearchBarWidget extends HookConsumerWidget {
                               onTap: () {
                                 _searchBarHeigh.value =
                                     MediaQuery.of(context).size.height * 0.8;
-                                // _isSearchingDestination.value = true;
-                                // _isSearchingPickUp.value = false;
+                                _isSearchingDestination.value = true;
+                                _isSearchingPickUp.value = false;
                               },
                               onChanged: (value) {
-                                // suggestionList(value);
-                                // _suggestions.value!.clear();
+                                suggestionList(value);
+                                _suggestions.value!.clear();
                               },
                               onSubmitted: (value) {
                                 _searchBarHeigh.value =
@@ -217,13 +219,14 @@ class SearchBarWidget extends HookConsumerWidget {
                                 return InkWell(
                                   onTap: () {
                                     destinationController.text = "";
-                                    destinationController.text = suggestion;
+                                    destinationController.text =
+                                        suggestion.address.streetName;
                                     _isSearchingDestination.value = false;
                                   },
                                   child: Container(
                                     margin: EdgeInsets.all(2),
                                     color: Color.fromARGB(255, 120, 29, 29),
-                                    child: Text(suggestion),
+                                    child: Text(suggestion.address.streetName),
                                   ),
                                 );
                               }),

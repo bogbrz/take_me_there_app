@@ -7,3 +7,6 @@ const CameraPosition googlePlexInitialPosition = CameraPosition(
 
 const key = "AIzaSyCJtDbYQPyMOXIdSD_jm7NQHRb2pI3tyEA";
 
+const freeKey = "DSb8iW2Kl0nyrvAwto7FeVrQ5AZRKwFG";
+
+const query = "https://{baseURL}/search/{versionNumber}/search/{query} .{ext}?key=DSb8iW2Kl0nyrvAwto7FeVrQ5AZRKwFG";

@@ -50,9 +50,9 @@ class SuggestionController extends StateNotifier<HomeState> {
       print("NULLL");
       return null;
     }
-    final welomeModel = Welcome.fromJson(results);
-    final welcomeResults = welomeModel.results;
-   
+
+    final welcomeResults = results.results;
+
     // final descriptions = <String>[];
     // for (final result in welcomeResults) {
     //   descriptions.add(result.);

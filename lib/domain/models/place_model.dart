@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final welcome = welcomeFromJson(jsonString);
-
 import 'dart:convert';
 
 Welcome welcomeFromJson(String str) => Welcome.fromJson(json.decode(str));
@@ -9,44 +5,44 @@ Welcome welcomeFromJson(String str) => Welcome.fromJson(json.decode(str));
 String welcomeToJson(Welcome data) => json.encode(data.toJson());
 
 class Welcome {
-    Summary summary;
-    List<Result> results;
+    Summary? summary;
+    List<Result>? results;
 
     Welcome({
-        required this.summary,
-        required this.results,
+        this.summary,
+        this.results,
     });
 
     factory Welcome.fromJson(Map<String, dynamic> json) => Welcome(
-        summary: Summary.fromJson(json["summary"]),
-        results: List<Result>.from(json["results"].map((x) => Result.fromJson(x))),
+        summary: json["summary"] == null ? null : Summary.fromJson(json["summary"]),
+        results: json["results"] == null ? null : List<Result>.from(json["results"].map((x) => Result.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
-        "summary": summary.toJson(),
-        "results": List<dynamic>.from(results.map((x) => x.toJson())),
+        "summary": summary?.toJson(),
+        "results": results == null ? null : List<dynamic>.from(results!.map((x) => x.toJson())),
     };
 }
 
 class Result {
-    String type;
-    String id;
-    double score;
-    Address address;
-    PositionLatLng position;
-    Viewport viewport;
-    List<EntryPoint> entryPoints;
+    String? type;
+    String? id;
+    double? score;
+    Address? address;
+    PositionLatLng? position;
+    Viewport? viewport;
+    List<EntryPoint>? entryPoints;
     String? info;
     Poi? poi;
 
     Result({
-        required this.type,
-        required this.id,
-        required this.score,
-        required this.address,
-        required this.position,
-        required this.viewport,
-        required this.entryPoints,
+        this.type,
+        this.id,
+        this.score,
+        this.address,
+        this.position,
+        this.viewport,
+        this.entryPoints,
         this.info,
         this.poi,
     });
@@ -55,10 +51,10 @@ class Result {
         type: json["type"],
         id: json["id"],
         score: json["score"]?.toDouble(),
-        address: Address.fromJson(json["address"]),
-        position: PositionLatLng.fromJson(json["position"]),
-        viewport: Viewport.fromJson(json["viewport"]),
-        entryPoints: List<EntryPoint>.from(json["entryPoints"].map((x) => EntryPoint.fromJson(x))),
+        address: json["address"] == null ? null : Address.fromJson(json["address"]),
+        position: json["position"] == null ? null : PositionLatLng.fromJson(json["position"]),
+        viewport: json["viewport"] == null ? null : Viewport.fromJson(json["viewport"]),
+        entryPoints: json["entryPoints"] == null ? null : List<EntryPoint>.from(json["entryPoints"].map((x) => EntryPoint.fromJson(x))),
         info: json["info"],
         poi: json["poi"] == null ? null : Poi.fromJson(json["poi"]),
     );
@@ -67,10 +63,10 @@ class Result {
         "type": type,
         "id": id,
         "score": score,
-        "address": address.toJson(),
-        "position": position.toJson(),
-        "viewport": viewport.toJson(),
-        "entryPoints": List<dynamic>.from(entryPoints.map((x) => x.toJson())),
+        "address": address?.toJson(),
+        "position": position?.toJson(),
+        "viewport": viewport?.toJson(),
+        "entryPoints": entryPoints == null ? null : List<dynamic>.from(entryPoints!.map((x) => x.toJson())),
         "info": info,
         "poi": poi?.toJson(),
     };
@@ -78,35 +74,35 @@ class Result {
 
 class Address {
     String? streetNumber;
-    String streetName;
-    String municipalitySubdivision;
-    String municipality;
-    String countrySecondarySubdivision;
-    String countrySubdivision;
-    String countrySubdivisionName;
-    String countrySubdivisionCode;
-    String postalCode;
-    String countryCode;
-    String country;
-    String countryCodeIso3;
-    String freeformAddress;
-    String localName;
+    String? streetName;
+    String? municipalitySubdivision;
+    String? municipality;
+    String? countrySecondarySubdivision;
+    String? countrySubdivision;
+    String? countrySubdivisionName;
+    String? countrySubdivisionCode;
+    String? postalCode;
+    String? countryCode;
+    String? country;
+    String? countryCodeIso3;
+    String? freeformAddress;
+    String? localName;
 
     Address({
         this.streetNumber,
-        required this.streetName,
-        required this.municipalitySubdivision,
-        required this.municipality,
-        required this.countrySecondarySubdivision,
-        required this.countrySubdivision,
-        required this.countrySubdivisionName,
-        required this.countrySubdivisionCode,
-        required this.postalCode,
-        required this.countryCode,
-        required this.country,
-        required this.countryCodeIso3,
-        required this.freeformAddress,
-        required this.localName,
+        this.streetName,
+        this.municipalitySubdivision,
+        this.municipality,
+        this.countrySecondarySubdivision,
+        this.countrySubdivision,
+        this.countrySubdivisionName,
+        this.countrySubdivisionCode,
+        this.postalCode,
+        this.countryCode,
+        this.country,
+        this.countryCodeIso3,
+        this.freeformAddress,
+        this.localName,
     });
 
     factory Address.fromJson(Map<String, dynamic> json) => Address(
@@ -145,32 +141,32 @@ class Address {
 }
 
 class EntryPoint {
-    String type;
-    PositionLatLng position;
+    String? type;
+    PositionLatLng? position;
 
     EntryPoint({
-        required this.type,
-        required this.position,
+        this.type,
+        this.position,
     });
 
     factory EntryPoint.fromJson(Map<String, dynamic> json) => EntryPoint(
         type: json["type"],
-        position: PositionLatLng.fromJson(json["position"]),
+        position: json["position"] == null ? null : PositionLatLng.fromJson(json["position"]),
     );
 
     Map<String, dynamic> toJson() => {
         "type": type,
-        "position": position.toJson(),
+        "position": position?.toJson(),
     };
 }
 
 class PositionLatLng {
-    double lat;
-    double lon;
+    double? lat;
+    double? lon;
 
     PositionLatLng({
-        required this.lat,
-        required this.lon,
+        this.lat,
+        this.lon,
     });
 
     factory PositionLatLng.fromJson(Map<String, dynamic> json) => PositionLatLng(
@@ -185,38 +181,38 @@ class PositionLatLng {
 }
 
 class Poi {
-    String name;
-    List<CategorySet> categorySet;
-    List<String> categories;
-    List<Classification> classifications;
+    String? name;
+    List<CategorySet>? categorySet;
+    List<String>? categories;
+    List<Classification>? classifications;
 
     Poi({
-        required this.name,
-        required this.categorySet,
-        required this.categories,
-        required this.classifications,
+        this.name,
+        this.categorySet,
+        this.categories,
+        this.classifications,
     });
 
     factory Poi.fromJson(Map<String, dynamic> json) => Poi(
         name: json["name"],
-        categorySet: List<CategorySet>.from(json["categorySet"].map((x) => CategorySet.fromJson(x))),
-        categories: List<String>.from(json["categories"].map((x) => x)),
-        classifications: List<Classification>.from(json["classifications"].map((x) => Classification.fromJson(x))),
+        categorySet: json["categorySet"] == null ? null : List<CategorySet>.from(json["categorySet"].map((x) => CategorySet.fromJson(x))),
+        categories: json["categories"] == null ? null : List<String>.from(json["categories"].map((x) => x)),
+        classifications: json["classifications"] == null ? null : List<Classification>.from(json["classifications"].map((x) => Classification.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
         "name": name,
-        "categorySet": List<dynamic>.from(categorySet.map((x) => x.toJson())),
-        "categories": List<dynamic>.from(categories.map((x) => x)),
-        "classifications": List<dynamic>.from(classifications.map((x) => x.toJson())),
+        "categorySet": categorySet == null ? null : List<dynamic>.from(categorySet!.map((x) => x.toJson())),
+        "categories": categories == null ? null : List<dynamic>.from(categories!.map((x) => x)),
+        "classifications": classifications == null ? null : List<dynamic>.from(classifications!.map((x) => x.toJson())),
     };
 }
 
 class CategorySet {
-    int id;
+    int? id;
 
     CategorySet({
-        required this.id,
+        this.id,
     });
 
     factory CategorySet.fromJson(Map<String, dynamic> json) => CategorySet(
@@ -229,32 +225,32 @@ class CategorySet {
 }
 
 class Classification {
-    String code;
-    List<Name> names;
+    String? code;
+    List<Name>? names;
 
     Classification({
-        required this.code,
-        required this.names,
+        this.code,
+        this.names,
     });
 
     factory Classification.fromJson(Map<String, dynamic> json) => Classification(
         code: json["code"],
-        names: List<Name>.from(json["names"].map((x) => Name.fromJson(x))),
+        names: json["names"] == null ? null : List<Name>.from(json["names"].map((x) => Name.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
         "code": code,
-        "names": List<dynamic>.from(names.map((x) => x.toJson())),
+        "names": names == null ? null : List<dynamic>.from(names!.map((x) => x.toJson())),
     };
 }
 
 class Name {
-    String nameLocale;
-    String name;
+    String? nameLocale;
+    String? name;
 
     Name({
-        required this.nameLocale,
-        required this.name,
+        this.nameLocale,
+        this.name,
     });
 
     factory Name.fromJson(Map<String, dynamic> json) => Name(
@@ -269,44 +265,44 @@ class Name {
 }
 
 class Viewport {
-    PositionLatLng topLeftPoint;
-    PositionLatLng btmRightPoint;
+    PositionLatLng? topLeftPoint;
+    PositionLatLng? btmRightPoint;
 
     Viewport({
-        required this.topLeftPoint,
-        required this.btmRightPoint,
+        this.topLeftPoint,
+        this.btmRightPoint,
     });
 
     factory Viewport.fromJson(Map<String, dynamic> json) => Viewport(
-        topLeftPoint: PositionLatLng.fromJson(json["topLeftPoint"]),
-        btmRightPoint: PositionLatLng.fromJson(json["btmRightPoint"]),
+        topLeftPoint: json["topLeftPoint"] == null ? null : PositionLatLng.fromJson(json["topLeftPoint"]),
+        btmRightPoint: json["btmRightPoint"] == null ? null : PositionLatLng.fromJson(json["btmRightPoint"]),
     );
 
     Map<String, dynamic> toJson() => {
-        "topLeftPoint": topLeftPoint.toJson(),
-        "btmRightPoint": btmRightPoint.toJson(),
+        "topLeftPoint": topLeftPoint?.toJson(),
+        "btmRightPoint": btmRightPoint?.toJson(),
     };
 }
 
 class Summary {
-    String query;
-    String queryType;
-    int queryTime;
-    int numResults;
-    int offset;
-    int totalResults;
-    int fuzzyLevel;
-    List<dynamic> queryIntent;
+    String? query;
+    String? queryType;
+    int? queryTime;
+    int? numResults;
+    int? offset;
+    int? totalResults;
+    int? fuzzyLevel;
+    List<dynamic>? queryIntent;
 
     Summary({
-        required this.query,
-        required this.queryType,
-        required this.queryTime,
-        required this.numResults,
-        required this.offset,
-        required this.totalResults,
-        required this.fuzzyLevel,
-        required this.queryIntent,
+        this.query,
+        this.queryType,
+        this.queryTime,
+        this.numResults,
+        this.offset,
+        this.totalResults,
+        this.fuzzyLevel,
+        this.queryIntent,
     });
 
     factory Summary.fromJson(Map<String, dynamic> json) => Summary(
@@ -317,7 +313,7 @@ class Summary {
         offset: json["offset"],
         totalResults: json["totalResults"],
         fuzzyLevel: json["fuzzyLevel"],
-        queryIntent: List<dynamic>.from(json["queryIntent"].map((x) => x)),
+        queryIntent: json["queryIntent"] == null ? null : List<dynamic>.from(json["queryIntent"].map((x) => x)),
     );
 
     Map<String, dynamic> toJson() => {
@@ -328,6 +324,6 @@ class Summary {
         "offset": offset,
         "totalResults": totalResults,
         "fuzzyLevel": fuzzyLevel,
-        "queryIntent": List<dynamic>.from(queryIntent.map((x) => x)),
+        "queryIntent": queryIntent == null ? null : List<dynamic>.from(queryIntent!.map((x) => x)),
     };
 }

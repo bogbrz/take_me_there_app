@@ -131,50 +131,41 @@ class HomePage extends HookConsumerWidget {
           ? Center(child: CircularProgressIndicator())
           : Stack(children: [
               Positioned.fill(
-                child: MapPicker(
-                  iconWidget: Image(
-                    height: MediaQuery.of(context).size.height * 0.1,
-                    width: MediaQuery.of(context).size.width * 0.1,
-                    image: AssetImage("assets/hatchback.png"),
-                  ),
-                  mapPickerController: mapPickerController,
-                  child: GoogleMap(
-                    mapType: MapType.normal,
-                    myLocationEnabled: true,
-                    myLocationButtonEnabled: true,
-                    initialCameraPosition: googlePlexInitialPosition,
-                    zoomControlsEnabled: true,
-                    onMapCreated: (controller) {
-                      controllerGoogleMap = controller;
-                      updateMapTheme(controller);
-                      _controller.complete(controllerGoogleMap);
-                      getCurrentLiveLocationOfUser();
-                    },
-                    onCameraIdle: () async {
-                      // notify map stopped moving
-                      mapPickerController.mapFinishedMoving!();
-                      //get address name from camera position
-                      List<Placemark> placemarks =
-                          await placemarkFromCoordinates(
-                        cameraPosition.target.latitude,
-                        cameraPosition.target.longitude,
-                      );
-                      print(placemarks);
+                child: GoogleMap(
+                  mapType: MapType.normal,
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: true,
+                  initialCameraPosition: googlePlexInitialPosition,
+                  zoomControlsEnabled: true,
+                  onMapCreated: (controller) {
+                    controllerGoogleMap = controller;
+                    updateMapTheme(controller);
+                    _controller.complete(controllerGoogleMap);
+                    getCurrentLiveLocationOfUser();
+                  },
+                  onCameraIdle: () async {
+                    // notify map stopped moving
+                    mapPickerController.mapFinishedMoving!();
+                    //get address name from camera position
+                    List<Placemark> placemarks = await placemarkFromCoordinates(
+                      cameraPosition.target.latitude,
+                      cameraPosition.target.longitude,
+                    );
+                    print(placemarks);
 
-                      // update the ui with the address
-                    },
-                    markers: {
-                      Marker(
-                          markerId: MarkerId("value1"),
-                          icon: BitmapDescriptor.defaultMarker,
-                          position: locationOne),
-                      Marker(
-                          markerId: MarkerId("value2"),
-                          icon: BitmapDescriptor.defaultMarker,
-                          position: locationTwo),
-                    },
-                    polylines: Set<Polyline>.of(polylinesState.value.values),
-                  ),
+                    // update the ui with the address
+                  },
+                  markers: {
+                    Marker(
+                        markerId: MarkerId("value1"),
+                        icon: BitmapDescriptor.defaultMarker,
+                        position: locationOne),
+                    Marker(
+                        markerId: MarkerId("value2"),
+                        icon: BitmapDescriptor.defaultMarker,
+                        position: locationTwo),
+                  },
+                  polylines: Set<Polyline>.of(polylinesState.value.values),
                 ),
               ),
               Align(

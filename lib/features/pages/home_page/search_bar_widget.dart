@@ -49,7 +49,18 @@ class SearchBarWidget extends HookConsumerWidget {
       if (listOfResults == null) {
         _suggestions.value = null;
       } else {
-        _suggestions.value!.addAll(listOfResults);
+        for (final result in listOfResults) {
+          if (result.address == null) {
+            null;
+          } else if (result.address!.streetName != null) {
+            _suggestions.value!.add(result);
+          } else if (result.address!.streetName != null &&
+              result.address!.country != null) {
+            print("DUPSKO");
+            _suggestions.value!.add(result);
+          }
+        }
+        // _suggestions.value!.addAll(listOfResults);
       }
 
       print("PAGE $listOfResults");
@@ -63,6 +74,8 @@ class SearchBarWidget extends HookConsumerWidget {
       destinationController.addListener(() {
         _areFieldsEmpty.value = areFieldsEmpty();
       });
+      _isSearchingDestination.addListener(() {});
+      _isSearchingPickUp.addListener(() {});
       // focusNode = FocusNode();
       return;
     });
@@ -109,20 +122,24 @@ class SearchBarWidget extends HookConsumerWidget {
                             onTap: () {
                               _searchBarHeigh.value =
                                   MediaQuery.of(context).size.height * 0.8;
+                              print(_isSearchingPickUp.value);
                               pickUpLocationController.text = "";
                               _isSearchingPickUp.value = true;
+                              print(_isSearchingPickUp.value);
                             },
                             onChanged: (value) {
                               suggestionList(value);
                               _suggestions.value!.clear();
                             },
                             onSubmitted: (value) {
+                              print(_isSearchingPickUp.value);
                               value.isEmpty
                                   ? _searchBarHeigh.value =
                                       MediaQuery.of(context).size.height * 0.27
                                   : _focusNode.requestFocus();
                               _isSearchingPickUp.value = false;
                               _isSearchingDestination.value = true;
+                              print(_isSearchingPickUp.value);
                             },
                             controller: pickUpLocationController,
                             decoration: InputDecoration(
@@ -158,13 +175,18 @@ class SearchBarWidget extends HookConsumerWidget {
                                   onTap: () {
                                     pickUpLocationController.text = "";
                                     pickUpLocationController.text =
-                                        suggestion.address.streetName;
+                                        suggestion.address?.streetName ??
+                                            suggestion.address?.country ??
+                                            "null";
                                     _isSearchingPickUp.value = false;
                                   },
                                   child: Container(
                                     margin: EdgeInsets.all(2),
                                     color: Color.fromARGB(255, 120, 29, 29),
-                                    child: Text(suggestion.address.streetName),
+                                    child: Text(
+                                        suggestion.address?.streetName ??
+                                            suggestion.address?.country ??
+                                            "null"),
                                   ),
                                 );
                               }),
@@ -220,13 +242,18 @@ class SearchBarWidget extends HookConsumerWidget {
                                   onTap: () {
                                     destinationController.text = "";
                                     destinationController.text =
-                                        suggestion.address.streetName;
+                                        suggestion.address?.streetName ??
+                                            suggestion.address?.country ??
+                                            "null";
                                     _isSearchingDestination.value = false;
                                   },
                                   child: Container(
                                     margin: EdgeInsets.all(2),
                                     color: Color.fromARGB(255, 120, 29, 29),
-                                    child: Text(suggestion.address.streetName),
+                                    child: Text(
+                                        suggestion.address?.streetName ??
+                                            suggestion.address?.country ??
+                                            "null"),
                                   ),
                                 );
                               }),

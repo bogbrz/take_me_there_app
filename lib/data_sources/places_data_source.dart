@@ -8,6 +8,7 @@ import 'package:injectable/injectable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:take_me_there_app/app/env/env.dart';
 import 'package:take_me_there_app/domain/models/place_model.dart';
 import 'package:take_me_there_app/map_config/google_maps_dependecy.dart';
 
@@ -25,18 +26,22 @@ import 'package:take_me_there_app/map_config/google_maps_dependecy.dart';
 //   );
 // }
 class PlacesDataSource {
-  String _token = "37465";
-  Future<Map<String, dynamic>?> getSuggestions(String adress) async {
-    String apiKey = freeKey;
+  static final _apiKey = Env.placesKey;
+  Future<Welcome> getSuggestions(String adress) async {
     String groundURL =
         'https://{baseURL}/search/{versionNumber}/search/{query} .{ext}?key=DSb8iW2Kl0nyrvAwto7FeVrQ5AZRKwFG';
     String request =
-        "https://api.tomtom.com/search/2/search/$adress.json?key=$apiKey";
+        "https://api.tomtom.com/search/2/search/$adress.json?key=$_apiKey&limit=2";
 
     final result = await Dio().get<Map<String, dynamic>>(request);
     final resultData = result.data;
+    final welcome = Welcome.fromJson(resultData!);
     print("DATA SOURCE  $resultData");
 
-    return resultData;
+    return welcome;
   }
 }
+
+//  "https://api.tomtom.com/search/2/search/query.json?key=DSb8iW2Kl0nyrvAwto7FeVrQ5AZRKwFG&limit=2";
+
+// DSb8iW2Kl0nyrvAwto7FeVrQ5AZRKwFG

@@ -11,7 +11,7 @@ void configureDependencies() => getIt.init();
 abstract class RegisterModule {
   @Named("BaseUrl")
   String get baseUrl =>
-      "https://maps.googleapis.com/maps/api/place/autocomplete/json?key=AIzaSyCJtDbYQPyMOXIdSD_jm7NQHRb2pI3tyEA";
+      "https://maps.googleapis.com/maps/api/place/autocomplete/json?key=Env.googleMapsKey";
 
   @lazySingleton
   Dio dio(@Named('BaseUrl') String url) => Dio(BaseOptions(baseUrl: url));

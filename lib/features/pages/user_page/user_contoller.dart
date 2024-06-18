@@ -16,7 +16,7 @@ class UserTest extends AsyncNotifier<UserModel> {
     final user = await ref.watch(authDataSourceProvider).getUser();
 
     return UserModel(
-      geoPoint: GeoPoint(37.43296265331129, -122.08832357078792),
+      localization: GeoPoint(37.43296265331129, -122.08832357078792),
       email: user!.email.toString(),
       username: user.displayName.toString(),
       phoneNumber: "user.photoURL.toString()",

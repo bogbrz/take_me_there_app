@@ -73,18 +73,20 @@ class HomePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userStreamProvider).value![0];
     final LatLng locationOne =
-        LatLng(user.geoPoint!.latitude, user.geoPoint!.longitude);
+        LatLng(user.localization!.latitude, user.localization!.longitude);
     CameraPosition cameraPosition = const CameraPosition(
       target: LatLng(41.311158, 69.279737),
       zoom: 14.4746,
     );
-    final LatLng locationTwo = LatLng(37.43296265331129, -122.08832357078792);
+    final LatLng locationTwo =
+        LatLng(user.destination!.latitude, user.destination!.longitude);
     Future<List<LatLng>> fetchPolylinePoints() async {
       final polylinePoints = PolylinePoints();
       final result = await polylinePoints.getRouteBetweenCoordinates(
         key,
-        PointLatLng(locationOne.latitude, locationOne.longitude),
-        PointLatLng(user.geoPoint!.latitude, user.geoPoint!.longitude),
+        PointLatLng(user.localization!.latitude, user.localization!.longitude),
+        PointLatLng(user.destination!.latitude, user.destination!.longitude),
+
         // PointLatLng(locationTwo.latitude, locationTwo.longitude)
       );
 
@@ -127,7 +129,7 @@ class HomePage extends HookConsumerWidget {
       return;
     });
     return Scaffold(
-      body: user.geoPoint == null
+      body: user.localization == null
           ? Center(child: CircularProgressIndicator())
           : Stack(children: [
               Positioned.fill(

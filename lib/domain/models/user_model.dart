@@ -12,7 +12,7 @@ class UserModel with _$UserModel {
     required String id,
     required String phoneNumber,
     required String userType,
-    required GeoPoint? geoPoint,
+    required GeoPoint? localization,
     required GeoPoint? destination,
   }) = _UserModel;
 }

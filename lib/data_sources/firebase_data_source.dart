@@ -87,7 +87,7 @@ class AuthDataSource {
                 id: doc.id,
                 phoneNumber: doc["phoneNumber"],
                 userType: doc["userType"],
-                geoPoint: doc["localization"],
+                localization: doc["localization"],
                 destination: doc["destination"]))
             .where((element) =>
                 element.email.toString() == auth.currentUser!.email.toString())

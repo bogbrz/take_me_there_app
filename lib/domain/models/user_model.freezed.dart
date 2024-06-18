@@ -21,7 +21,7 @@ mixin _$UserModel {
   String get id => throw _privateConstructorUsedError;
   String get phoneNumber => throw _privateConstructorUsedError;
   String get userType => throw _privateConstructorUsedError;
-  GeoPoint? get geoPoint => throw _privateConstructorUsedError;
+  GeoPoint? get localization => throw _privateConstructorUsedError;
   GeoPoint? get destination => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -40,7 +40,7 @@ abstract class $UserModelCopyWith<$Res> {
       String id,
       String phoneNumber,
       String userType,
-      GeoPoint? geoPoint,
+      GeoPoint? localization,
       GeoPoint? destination});
 }
 
@@ -62,7 +62,7 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? id = null,
     Object? phoneNumber = null,
     Object? userType = null,
-    Object? geoPoint = freezed,
+    Object? localization = freezed,
     Object? destination = freezed,
   }) {
     return _then(_value.copyWith(
@@ -86,9 +86,9 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.userType
           : userType // ignore: cast_nullable_to_non_nullable
               as String,
-      geoPoint: freezed == geoPoint
-          ? _value.geoPoint
-          : geoPoint // ignore: cast_nullable_to_non_nullable
+      localization: freezed == localization
+          ? _value.localization
+          : localization // ignore: cast_nullable_to_non_nullable
               as GeoPoint?,
       destination: freezed == destination
           ? _value.destination
@@ -112,7 +112,7 @@ abstract class _$$UserModelImplCopyWith<$Res>
       String id,
       String phoneNumber,
       String userType,
-      GeoPoint? geoPoint,
+      GeoPoint? localization,
       GeoPoint? destination});
 }
 
@@ -132,7 +132,7 @@ class __$$UserModelImplCopyWithImpl<$Res>
     Object? id = null,
     Object? phoneNumber = null,
     Object? userType = null,
-    Object? geoPoint = freezed,
+    Object? localization = freezed,
     Object? destination = freezed,
   }) {
     return _then(_$UserModelImpl(
@@ -156,9 +156,9 @@ class __$$UserModelImplCopyWithImpl<$Res>
           ? _value.userType
           : userType // ignore: cast_nullable_to_non_nullable
               as String,
-      geoPoint: freezed == geoPoint
-          ? _value.geoPoint
-          : geoPoint // ignore: cast_nullable_to_non_nullable
+      localization: freezed == localization
+          ? _value.localization
+          : localization // ignore: cast_nullable_to_non_nullable
               as GeoPoint?,
       destination: freezed == destination
           ? _value.destination
@@ -177,7 +177,7 @@ class _$UserModelImpl implements _UserModel {
       required this.id,
       required this.phoneNumber,
       required this.userType,
-      required this.geoPoint,
+      required this.localization,
       required this.destination});
 
   @override
@@ -191,13 +191,13 @@ class _$UserModelImpl implements _UserModel {
   @override
   final String userType;
   @override
-  final GeoPoint? geoPoint;
+  final GeoPoint? localization;
   @override
   final GeoPoint? destination;
 
   @override
   String toString() {
-    return 'UserModel(email: $email, username: $username, id: $id, phoneNumber: $phoneNumber, userType: $userType, geoPoint: $geoPoint, destination: $destination)';
+    return 'UserModel(email: $email, username: $username, id: $id, phoneNumber: $phoneNumber, userType: $userType, localization: $localization, destination: $destination)';
   }
 
   @override
@@ -213,15 +213,15 @@ class _$UserModelImpl implements _UserModel {
                 other.phoneNumber == phoneNumber) &&
             (identical(other.userType, userType) ||
                 other.userType == userType) &&
-            (identical(other.geoPoint, geoPoint) ||
-                other.geoPoint == geoPoint) &&
+            (identical(other.localization, localization) ||
+                other.localization == localization) &&
             (identical(other.destination, destination) ||
                 other.destination == destination));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, email, username, id, phoneNumber,
-      userType, geoPoint, destination);
+      userType, localization, destination);
 
   @JsonKey(ignore: true)
   @override
@@ -237,7 +237,7 @@ abstract class _UserModel implements UserModel {
       required final String id,
       required final String phoneNumber,
       required final String userType,
-      required final GeoPoint? geoPoint,
+      required final GeoPoint? localization,
       required final GeoPoint? destination}) = _$UserModelImpl;
 
   @override
@@ -251,7 +251,7 @@ abstract class _UserModel implements UserModel {
   @override
   String get userType;
   @override
-  GeoPoint? get geoPoint;
+  GeoPoint? get localization;
   @override
   GeoPoint? get destination;
   @override

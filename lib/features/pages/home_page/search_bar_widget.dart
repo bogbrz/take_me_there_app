@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:take_me_there_app/domain/models/place_model.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_controller.dart';
@@ -27,6 +29,8 @@ class SearchBarWidget extends HookConsumerWidget {
     final _suggestions = useState<List<Result>?>([]);
     final _isSearchingPickUp = useState<bool>(false);
     final _isSearchingDestination = useState<bool>(false);
+    final _pickUpLatLng = useState<LatLng?>(null);
+    final _destinationLatLng = useState<LatLng?>(null);
 
     bool areFieldsEmpty() {
       return pickUpLocationController.text.toString().isEmpty ||
@@ -156,6 +160,7 @@ class SearchBarWidget extends HookConsumerWidget {
                               pickUpLocationController.text = "";
                               pickUpLocationController.text =
                                   "Current Position";
+
                               _isSearchingPickUp.value = false;
                               _focusNode.requestFocus();
                             },
@@ -174,17 +179,23 @@ class SearchBarWidget extends HookConsumerWidget {
                                 return InkWell(
                                   onTap: () {
                                     pickUpLocationController.text = "";
+
                                     pickUpLocationController.text =
                                         suggestion.address?.streetName ??
                                             suggestion.address?.country ??
                                             "null";
                                     _isSearchingPickUp.value = false;
+                                    if (suggestion.position != null) {
+                                      _pickUpLatLng.value = LatLng(
+                                          suggestion.position!.lat!,
+                                          suggestion.position!.lon!);
+                                    }
                                   },
                                   child: Container(
                                     margin: EdgeInsets.all(2),
                                     color: Color.fromARGB(255, 120, 29, 29),
                                     child: Text(
-                                        suggestion.address?.streetName ??
+                                        "Name: ${suggestion.address?.streetName} Munipacity ${suggestion.address?.municipality}  POSITION:Lat ${suggestion.position?.lat} Lon${suggestion.position?.lon}" ??
                                             suggestion.address?.country ??
                                             "null"),
                                   ),
@@ -246,6 +257,11 @@ class SearchBarWidget extends HookConsumerWidget {
                                             suggestion.address?.country ??
                                             "null";
                                     _isSearchingDestination.value = false;
+                                    if (suggestion.position != null) {
+                                      _destinationLatLng.value = LatLng(
+                                          suggestion.position!.lat!,
+                                          suggestion.position!.lon!);
+                                    }
                                   },
                                   child: Container(
                                     margin: EdgeInsets.all(2),
@@ -272,7 +288,18 @@ class SearchBarWidget extends HookConsumerWidget {
                           : () {
                               _searchBarHeigh.value =
                                   MediaQuery.of(context).size.height * 0.5;
+                              places.updateDestination(
+                                  userId: userId,
+                                  localization: _pickUpLatLng.value == null
+                                      ? null
+                                      : GeoPoint(_pickUpLatLng.value!.latitude,
+                                          _pickUpLatLng.value!.longitude),
+                                  destination: GeoPoint(
+                                    _destinationLatLng.value!.latitude,
+                                    _destinationLatLng.value!.longitude,
+                                  ));
                               widgetContetController.value = 1;
+
                               // pickUpLocationController.clear();
                               // destinationController.clear();
                             },
@@ -282,8 +309,12 @@ class SearchBarWidget extends HookConsumerWidget {
                 ],
               ),
             ] else ...[
-              RouteSpecificationWidget(pickUpLocationController.value.text,
-                  destinationController.value.text),
+              RouteSpecificationWidget(
+                pickUpPlace: pickUpLocationController.value.text,
+                destinationPlace: destinationController.value.text,
+                destination: _destinationLatLng.value!,
+                pickUp: _pickUpLatLng.value!,
+              ),
             ],
           ],
         ),
@@ -293,13 +324,17 @@ class SearchBarWidget extends HookConsumerWidget {
 }
 
 class RouteSpecificationWidget extends HookConsumerWidget {
-  const RouteSpecificationWidget(
-    this.pickUpPlace,
-    this.destinationPlace, {
+  const RouteSpecificationWidget({
+    required this.pickUpPlace,
+    required this.destinationPlace,
+    required this.destination,
+    required this.pickUp,
     super.key,
   });
   final String pickUpPlace;
   final String destinationPlace;
+  final LatLng? pickUp;
+  final LatLng destination;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -307,6 +342,7 @@ class RouteSpecificationWidget extends HookConsumerWidget {
       child: SizedBox(
         child: ListView(
           children: [
+            Text("$pickUpPlace $pickUp,,,,, $destinationPlace $destination"),
             SizedBox(
               width: MediaQuery.of(context).size.width * 0.1,
               child: Image(

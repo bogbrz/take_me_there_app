@@ -26,49 +26,29 @@ class SearchBarWidget extends HookConsumerWidget {
         useState<double?>(MediaQuery.of(context).size.height * 0.27);
     final _focusNode = useFocusNode();
 
-    final _suggestions = useState<List<Result>?>([]);
+    final _suggestions = useState<List<Result>>([]);
     final _isSearchingPickUp = useState<bool>(false);
     final _isSearchingDestination = useState<bool>(false);
     final _pickUpLatLng = useState<LatLng?>(null);
     final _destinationLatLng = useState<LatLng?>(null);
+    final suggestionLenght = useState<double>(0);
 
     bool areFieldsEmpty() {
       return pickUpLocationController.text.toString().isEmpty ||
           destinationController.text.toString().isEmpty;
     }
 
-    // void makeSuggestion(String adress) async {
-    //   String googlePlacesApiKey = key;
-    //   String groundURL =
-    //       'https://maps.googleapis.com/maps/api/place/autocomplete/json';
-    //   String request =
-    //       '$groundURL?input=$adress&key=$googlePlacesApiKey&sessiontoken=$_token';
-
-    //   _response.value = await Dio().get(request);
-
-    //   print("RESULT DATA : ${_response.value}");
-    // }
-    void suggestionList(String adress) async {
-      final listOfResults = await places.getSuggestions(address: adress);
+    void suggestionList(String address) async {
+      final listOfResults = await places.getSuggestions(address: address);
       if (listOfResults == null) {
-        _suggestions.value = null;
+        _suggestions.value = [];
       } else {
-        for (final result in listOfResults) {
-          if (result.address == null) {
-            null;
-          } else if (result.address!.streetName != null) {
-            _suggestions.value!.add(result);
-          } else if (result.address!.streetName != null &&
-              result.address!.country != null) {
-            print("DUPSKO");
-            _suggestions.value!.add(result);
-          }
-        }
-        // _suggestions.value!.addAll(listOfResults);
+        _suggestions.value = listOfResults
+            .where((result) =>
+                result.address?.streetName != null ||
+                result.address?.country != null)
+            .toList();
       }
-
-      print("PAGE $listOfResults");
-      print("LIST ${_suggestions.value}");
     }
 
     useEffect(() {
@@ -78,11 +58,8 @@ class SearchBarWidget extends HookConsumerWidget {
       destinationController.addListener(() {
         _areFieldsEmpty.value = areFieldsEmpty();
       });
-      _isSearchingDestination.addListener(() {});
-      _isSearchingPickUp.addListener(() {});
-      // focusNode = FocusNode();
       return;
-    });
+    }, []);
 
     return AnimatedSize(
       duration: Duration(seconds: 1),
@@ -126,24 +103,20 @@ class SearchBarWidget extends HookConsumerWidget {
                             onTap: () {
                               _searchBarHeigh.value =
                                   MediaQuery.of(context).size.height * 0.8;
-                              print(_isSearchingPickUp.value);
                               pickUpLocationController.text = "";
                               _isSearchingPickUp.value = true;
-                              print(_isSearchingPickUp.value);
                             },
                             onChanged: (value) {
+                              _suggestions.value.clear();
                               suggestionList(value);
-                              _suggestions.value!.clear();
                             },
                             onSubmitted: (value) {
-                              print(_isSearchingPickUp.value);
                               value.isEmpty
                                   ? _searchBarHeigh.value =
                                       MediaQuery.of(context).size.height * 0.27
                                   : _focusNode.requestFocus();
                               _isSearchingPickUp.value = false;
                               _isSearchingDestination.value = true;
-                              print(_isSearchingPickUp.value);
                             },
                             controller: pickUpLocationController,
                             decoration: InputDecoration(
@@ -168,18 +141,15 @@ class SearchBarWidget extends HookConsumerWidget {
                       ],
                     ),
                   ),
-                  _isSearchingPickUp.value &&
-                          pickUpLocationController.text.isNotEmpty
+                  _isSearchingPickUp.value
                       ? SizedBox(
                           height: MediaQuery.of(context).size.height * 0.15,
                           child: ListView.builder(
-                              itemCount: _suggestions.value!.length,
+                              itemCount: _suggestions.value.length,
                               itemBuilder: (context, index) {
-                                final suggestion = _suggestions.value![index];
+                                final suggestion = _suggestions.value[index];
                                 return InkWell(
                                   onTap: () {
-                                    pickUpLocationController.text = "";
-
                                     pickUpLocationController.text =
                                         suggestion.address?.streetName ??
                                             suggestion.address?.country ??
@@ -195,9 +165,10 @@ class SearchBarWidget extends HookConsumerWidget {
                                     margin: EdgeInsets.all(2),
                                     color: Color.fromARGB(255, 120, 29, 29),
                                     child: Text(
-                                        "Name: ${suggestion.address?.streetName} Munipacity ${suggestion.address?.municipality}  POSITION:Lat ${suggestion.position?.lat} Lon${suggestion.position?.lon}" ??
-                                            suggestion.address?.country ??
-                                            "null"),
+                                      "Name: ${suggestion.address?.streetName ?? ''} Munipacity: ${suggestion.address?.municipality ?? ''} POSITION: Lat: ${suggestion.position?.lat ?? ''} Lon: ${suggestion.position?.lon ?? ''}" ??
+                                          suggestion.address?.country ??
+                                          "null",
+                                    ),
                                   ),
                                 );
                               }),
@@ -224,8 +195,8 @@ class SearchBarWidget extends HookConsumerWidget {
                                 _isSearchingPickUp.value = false;
                               },
                               onChanged: (value) {
+                                _suggestions.value.clear();
                                 suggestionList(value);
-                                _suggestions.value!.clear();
                               },
                               onSubmitted: (value) {
                                 _searchBarHeigh.value =
@@ -241,17 +212,15 @@ class SearchBarWidget extends HookConsumerWidget {
                       ],
                     ),
                   ),
-                  _isSearchingDestination.value &&
-                          destinationController.text.isNotEmpty
+                  _isSearchingDestination.value
                       ? SizedBox(
                           height: MediaQuery.of(context).size.height * 0.15,
                           child: ListView.builder(
-                              itemCount: _suggestions.value!.length,
+                              itemCount: _suggestions.value.length,
                               itemBuilder: (context, index) {
-                                final suggestion = _suggestions.value![index];
+                                final suggestion = _suggestions.value[index];
                                 return InkWell(
                                   onTap: () {
-                                    destinationController.text = "";
                                     destinationController.text =
                                         suggestion.address?.streetName ??
                                             suggestion.address?.country ??
@@ -267,9 +236,10 @@ class SearchBarWidget extends HookConsumerWidget {
                                     margin: EdgeInsets.all(2),
                                     color: Color.fromARGB(255, 120, 29, 29),
                                     child: Text(
-                                        suggestion.address?.streetName ??
-                                            suggestion.address?.country ??
-                                            "null"),
+                                      suggestion.address?.streetName ??
+                                          suggestion.address?.country ??
+                                          "null",
+                                    ),
                                   ),
                                 );
                               }),
@@ -299,9 +269,6 @@ class SearchBarWidget extends HookConsumerWidget {
                                     _destinationLatLng.value!.longitude,
                                   ));
                               widgetContetController.value = 1;
-
-                              // pickUpLocationController.clear();
-                              // destinationController.clear();
                             },
                       child: Text("Take me there"),
                     )),
@@ -312,8 +279,8 @@ class SearchBarWidget extends HookConsumerWidget {
               RouteSpecificationWidget(
                 pickUpPlace: pickUpLocationController.value.text,
                 destinationPlace: destinationController.value.text,
-                destination: _destinationLatLng.value!,
-                pickUp: _pickUpLatLng.value!,
+                destination: _destinationLatLng.value,
+                pickUp: _pickUpLatLng.value,
               ),
             ],
           ],
@@ -334,7 +301,7 @@ class RouteSpecificationWidget extends HookConsumerWidget {
   final String pickUpPlace;
   final String destinationPlace;
   final LatLng? pickUp;
-  final LatLng destination;
+  final LatLng? destination;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -30,7 +30,7 @@ class HomePage extends HookConsumerWidget {
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
   GoogleMapController? controllerGoogleMap;
-  MapPickerController mapPickerController = MapPickerController();
+
   Position? currentPositionOfUser;
   void updateMapTheme(GoogleMapController mapController) {
     getJsonFileFromThemes(mapThemePath: "themes/dark_theme.json").then(
@@ -72,31 +72,35 @@ class HomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userStreamProvider).value![0];
-    final LatLng locationOne =
-        LatLng(user.localization!.latitude, user.localization!.longitude);
+
     CameraPosition cameraPosition = const CameraPosition(
       target: LatLng(41.311158, 69.279737),
       zoom: 14.4746,
     );
-    final LatLng locationTwo =
-        LatLng(user.destination!.latitude, user.destination!.longitude);
-    Future<List<LatLng>> fetchPolylinePoints() async {
-      final polylinePoints = PolylinePoints();
-      final result = await polylinePoints.getRouteBetweenCoordinates(
-        key,
-        PointLatLng(user.localization!.latitude, user.localization!.longitude),
-        PointLatLng(user.destination!.latitude, user.destination!.longitude),
+    final LatLng locationOne = LatLng(
+        user.localization?.latitude ?? 0, user.localization?.longitude ?? 0);
+    final LatLng locationTwo = LatLng(
+        user.destination?.latitude ?? 0, user.destination?.longitude ?? 0);
+    // Future<List<LatLng>> fetchPolylinePoints() async {
+    //   final polylinePoints = PolylinePoints();
 
-        // PointLatLng(locationTwo.latitude, locationTwo.longitude)
-      );
+    //   final result = await polylinePoints.getRouteBetweenCoordinates(
+    //     key,
+    //     PointLatLng(locationOne.latitude, locationOne.longitude),
+    //     PointLatLng(locationTwo.latitude, locationTwo.longitude),
 
-      return result.points
-          .map((point) => LatLng(point.latitude, point.longitude))
-          .toList();
-    }
+    //     // PointLatLng(locationTwo.latitude, locationTwo.longitude)
+    //   );
+    //   print("fetch");
+
+    //   return result.points
+    //       .map((point) => LatLng(point.latitude, point.longitude))
+    //       .toList();
+    // }
 
     Future<Polyline> generatePolylinesFromPoints(
         List<LatLng> polylineCoordinates) async {
+      print("GENERATE");
       return Polyline(
           polylineId: PolylineId("1"),
           width: 5,
@@ -108,73 +112,60 @@ class HomePage extends HookConsumerWidget {
     //   final points = await fetchPolylinePoints();
     //   generatePolylinesFromPoints(points);
     // }
-    Future<void> initilazeMap() async {
-      final points = await fetchPolylinePoints();
-      generatePolylinesFromPoints(points);
-    }
+    // Future<void> initilazeMap() async {
+    //   final points = await fetchPolylinePoints();
+    //   generatePolylinesFromPoints(points);
+    // }
 
     final polylinesState = useState<Map<PolylineId, Polyline>>({});
     useEffect(() {
+      // initilazeMap();
       // ref
       //     .read(locationControllerProvider.notifier)
       //     .updateLocation(userId: user.id);
-      fetchPolylinePoints().then((points) {
-        if (points.isNotEmpty) {
-          generatePolylinesFromPoints(points).then((polyline) {
-            polylinesState.value = {PolylineId("1"): polyline};
-          });
-        }
-      });
+      // fetchPolylinePoints().then((points) {
+      //   if (points.isNotEmpty) {
+      //     generatePolylinesFromPoints(points).then((polyline) {
+      //       polylinesState.value = {PolylineId("1"): polyline};
+      //     });
+      //   }
+      // });
 
       return;
     });
     return Scaffold(
-      body: user.localization == null
-          ? Center(child: CircularProgressIndicator())
-          : Stack(children: [
-              Positioned.fill(
-                child: GoogleMap(
-                  mapType: MapType.normal,
-                  myLocationEnabled: true,
-                  myLocationButtonEnabled: true,
-                  initialCameraPosition: googlePlexInitialPosition,
-                  zoomControlsEnabled: true,
-                  onMapCreated: (controller) {
-                    controllerGoogleMap = controller;
-                    updateMapTheme(controller);
-                    _controller.complete(controllerGoogleMap);
-                    getCurrentLiveLocationOfUser();
-                  },
-                  onCameraIdle: () async {
-                    // notify map stopped moving
-                    mapPickerController.mapFinishedMoving!();
-                    //get address name from camera position
-                    List<Placemark> placemarks = await placemarkFromCoordinates(
-                      cameraPosition.target.latitude,
-                      cameraPosition.target.longitude,
-                    );
-                    print(placemarks);
-
-                    // update the ui with the address
-                  },
-                  markers: {
-                    Marker(
-                        markerId: MarkerId("value1"),
-                        icon: BitmapDescriptor.defaultMarker,
-                        position: locationOne),
-                    Marker(
-                        markerId: MarkerId("value2"),
-                        icon: BitmapDescriptor.defaultMarker,
-                        position: locationTwo),
-                  },
-                  polylines: Set<Polyline>.of(polylinesState.value.values),
-                ),
-              ),
-              Align(
-                alignment: FractionalOffset.bottomCenter,
-                child: SearchBarWidget(user.id),
-              )
-            ]),
+      body: Stack(children: [
+        Positioned.fill(
+          child: GoogleMap(
+            mapType: MapType.normal,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
+            initialCameraPosition: googlePlexInitialPosition,
+            zoomControlsEnabled: true,
+            onMapCreated: (controller) {
+              controllerGoogleMap = controller;
+              updateMapTheme(controller);
+              _controller.complete(controllerGoogleMap);
+              getCurrentLiveLocationOfUser();
+            },
+            markers: {
+              Marker(
+                  markerId: MarkerId("value1"),
+                  icon: BitmapDescriptor.defaultMarker,
+                  position: locationOne),
+              Marker(
+                  markerId: MarkerId("value2"),
+                  icon: BitmapDescriptor.defaultMarker,
+                  position: locationTwo),
+            },
+            polylines: Set<Polyline>.of(polylinesState.value.values),
+          ),
+        ),
+        Align(
+          alignment: FractionalOffset.bottomCenter,
+          child: SearchBarWidget(user.id),
+        )
+      ]),
     );
   }
 }

@@ -14,5 +14,6 @@ class UserModel with _$UserModel {
     required String userType,
     required GeoPoint? localization,
     required GeoPoint? destination,
+    @Default(false) bool findRoute
   }) = _UserModel;
 }

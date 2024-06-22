@@ -34,7 +34,8 @@ class AuthDataSource {
           "uid": auth.currentUser!.uid,
           "phoneNumber": phoneNumber,
           "localization": GeoPoint(0, 0),
-          "destination": GeoPoint(0, 0)
+          "destination": GeoPoint(0, 0),
+          "findRoute": false
         });
       });
 
@@ -88,7 +89,8 @@ class AuthDataSource {
                 phoneNumber: doc["phoneNumber"],
                 userType: doc["userType"],
                 localization: doc["localization"],
-                destination: doc["destination"]))
+                destination: doc["destination"],
+                findRoute: doc["findRoute"]))
             .where((element) =>
                 element.email.toString() == auth.currentUser!.email.toString())
             .toList());

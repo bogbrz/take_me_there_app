@@ -61,6 +61,19 @@ class SuggestionController extends StateNotifier<HomeState> {
     return welcomeResults;
   }
 
+  Future<List<List<double>>> getRoute(
+      {required String startLat,
+      required String startLng,
+      required String endLat,
+      required String endLng}) async {
+    state = const HomeStateLoading();
+    final results = await ref.read(placesDataSourceProvider).getRoute(
+        startLng: startLng, startLat: startLat, endLng: endLng, endLat: endLat);
+    final features = results.features;
+
+    return  features[0].geometry.coordinates;
+  }
+
   void updateLocation({required String userId}) async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.bestForNavigation);

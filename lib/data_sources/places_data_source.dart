@@ -4,6 +4,7 @@
 // import 'package:take_me_there_app/map_config/google_maps_dependecy.dart';
 
 import 'package:dio/dio.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:injectable/injectable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:retrofit/retrofit.dart';
@@ -44,19 +45,20 @@ class PlacesDataSource {
     return welcome;
   }
 
-  Future<WelcomeDirections> getRoute(
-      {required String startLng,
-      required String startLat,
-      required String endLng,
-      required String endLat}) async {
+  Future<WelcomeDirections> getRoute({
+    required LatLng start,
+    required LatLng end,
+  }) async {
+    final String testUrl =
+        "https://api.openrouteservice.org/v2/directions/driving-car?api_key=5b3ce3597851110001cf624872a3bb3964934485bb3ccfb61e0fcda8&start=122.084, 37.4219983&end=122.064, 37.4219983&radiuses=-1";
     final String url =
-        "https://api.openrouteservice.org/v2/directions/driving-car?api_key=$_directionsKey&start=$startLat,$startLng&end=$endLat,$endLng";
+        "https://api.openrouteservice.org/v2/directions/driving-car?api_key=$_directionsKey&start=${start.longitude},${start.latitude}&end=${end.longitude},${end.latitude}";
 
     final result = await Dio().get<Map<String, dynamic>>(url);
 
     final resultData = result.data;
     final resultModel = WelcomeDirections.fromJson(resultData!);
-
+    print("DATA SOURCE : ${resultModel}");
     return resultModel;
   }
 }

@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:take_me_there_app/domain/models/place_model.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_controller.dart';
+import 'package:take_me_there_app/features/pages/home_page/options_list.dart';
 
 class SearchBarWidget extends HookConsumerWidget {
   SearchBarWidget(
@@ -135,7 +136,10 @@ class SearchBarWidget extends HookConsumerWidget {
                                   "Current Position";
 
                               _isSearchingPickUp.value = false;
+                              _searchBarHeigh.value =
+                                  MediaQuery.of(context).size.height * 0.8;
                               _focusNode.requestFocus();
+                              _isSearchingDestination.value = true;
                             },
                             icon: Icon(Icons.my_location))
                       ],
@@ -236,7 +240,7 @@ class SearchBarWidget extends HookConsumerWidget {
                                     margin: EdgeInsets.all(2),
                                     color: Color.fromARGB(255, 120, 29, 29),
                                     child: Text(
-                                      suggestion.address?.streetName ??
+                                      "Name: ${suggestion.address?.streetName ?? ''} Munipacity: ${suggestion.address?.municipality ?? ''} POSITION: Lat: ${suggestion.position?.lat ?? ''} Lon: ${suggestion.position?.lon ?? ''}" ??
                                           suggestion.address?.country ??
                                           "null",
                                     ),
@@ -257,7 +261,7 @@ class SearchBarWidget extends HookConsumerWidget {
                           ? null
                           : () {
                               _searchBarHeigh.value =
-                                  MediaQuery.of(context).size.height * 0.5;
+                                  MediaQuery.of(context).size.height * 0.8;
                               places.updateDestination(
                                   userId: userId,
                                   localization: _pickUpLatLng.value == null
@@ -276,7 +280,7 @@ class SearchBarWidget extends HookConsumerWidget {
                 ],
               ),
             ] else ...[
-              RouteSpecificationWidget(
+              TravelOptionWidget(
                 pickUpPlace: pickUpLocationController.value.text,
                 destinationPlace: destinationController.value.text,
                 destination: _destinationLatLng.value,
@@ -290,8 +294,8 @@ class SearchBarWidget extends HookConsumerWidget {
   }
 }
 
-class RouteSpecificationWidget extends HookConsumerWidget {
-  const RouteSpecificationWidget({
+class TravelOptionWidget extends HookConsumerWidget {
+  const TravelOptionWidget({
     required this.pickUpPlace,
     required this.destinationPlace,
     required this.destination,
@@ -306,18 +310,32 @@ class RouteSpecificationWidget extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Expanded(
-      child: SizedBox(
-        child: ListView(
-          children: [
-            Text("$pickUpPlace $pickUp,,,,, $destinationPlace $destination"),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.1,
-              child: Image(
-                image: AssetImage("assets/hatchback.png"),
-              ),
-            )
-          ],
-        ),
+      child: Column(
+        children: [
+          Text("$pickUpPlace $pickUp,,,,, $destinationPlace $destination"),
+          Expanded(
+            child: ListView(children: [
+              for (final option in optionsList) ...[
+                Container(
+                  margin: EdgeInsets.only(bottom: 10),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      SizedBox(
+                          height: 100,
+                          child: Image(image: AssetImage(option.image))),
+                      Text(option.name),
+                      Text("${option.payRate} ${option.currency}")
+                    ],
+                  ),
+                )
+              ]
+            ]),
+          )
+        ],
       ),
     );
   }

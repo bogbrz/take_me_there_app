@@ -62,10 +62,10 @@ class SuggestionController extends StateNotifier<HomeState> {
     return welcomeResults;
   }
 
-  Future<List<LatLng>> getRoute({
-    required LatLng start,
-    required LatLng end,
-  }) async {
+  Future<List<LatLng>> getRoute(
+      {required LatLng start,
+      required LatLng end,
+      required String userId}) async {
     state = const HomeStateLoading();
     final results = await ref
         .read(placesDataSourceProvider)
@@ -79,6 +79,9 @@ class SuggestionController extends StateNotifier<HomeState> {
       route.add(LatLng(coordList[i][1], coordList[i][0]));
     }
     print("Controller : ${route}");
+    ref.read(authDataSourceProvider).updateDistance(
+        distance: results.features[0].properties.segments[0].distance,
+        userId: userId);
     return route;
   }
 

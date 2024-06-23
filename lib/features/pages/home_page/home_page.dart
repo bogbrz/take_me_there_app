@@ -104,6 +104,7 @@ class HomePage extends HookConsumerWidget {
       final points = await ref
           .read(suggestionControllerProvider.notifier)
           .getRoute(
+              userId: user.id,
               start: LatLng(
                 user.localization!.latitude,
                 user.localization!.longitude,
@@ -144,15 +145,23 @@ class HomePage extends HookConsumerWidget {
       final points = await fetchPolylinePoints();
       generatePolylineFromPoints(points: points);
     }
+
     // Future<void> initilazeMap() async {
     //   final points = await fetchPolylinePoints();
     //   generatePolylinesFromPoints(points);
     // }
-
-    useEffect(() {
-      if (user.findRoute) {
+    ref.listen(userStreamProvider, (previous, next) {
+      final previousUser = previous?.value?[0];
+      final currentUser = next.value![0];
+      if (previousUser?.findRoute != currentUser.findRoute &&
+          currentUser.findRoute) {
         initilazeMap();
-      } else {}
+      }
+    });
+    useEffect(() {
+      // if (user.findRoute) {
+      //   initilazeMap();
+      // } else {}
 
       // initilazeMap();
       // ref
@@ -206,7 +215,7 @@ class HomePage extends HookConsumerWidget {
                     initilazeMap();
                   },
                   child: Text("DUPA")),
-              SearchBarWidget(user.id),
+              SearchBarWidget(user.distance, user.id),
             ],
           ),
         )

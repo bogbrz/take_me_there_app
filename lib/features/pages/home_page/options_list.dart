@@ -17,5 +17,5 @@ final optionsList = <OptionModel>[
       payRate: 1.5,
       currency: "PLN"),
   OptionModel(
-      image: "assets/van.png", name: "Carriage", payRate: 1.1, currency: "PLN")
+      image: "assets/van.png", name: "Carriage", payRate: 1.3, currency: "PLN")
 ];

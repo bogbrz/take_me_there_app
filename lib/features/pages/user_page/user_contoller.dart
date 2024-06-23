@@ -23,6 +23,7 @@ class UserTest extends AsyncNotifier<UserModel> {
       userType: "s",
       id: "1",
       destination: GeoPoint(37.43296265331129, -122.08832357078792),
+      distance: 0
     );
   }
 }

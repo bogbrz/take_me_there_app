@@ -35,7 +35,8 @@ class AuthDataSource {
           "phoneNumber": phoneNumber,
           "localization": GeoPoint(0, 0),
           "destination": GeoPoint(0, 0),
-          "findRoute": false
+          "findRoute": false,
+          "distance": 0
         });
       });
 
@@ -69,6 +70,13 @@ class AuthDataSource {
     });
   }
 
+  Future<void> updateDistance(
+      {required double distance, required String userId}) {
+    return FirebaseFirestore.instance.collection("users").doc(userId).update({
+      "distance": distance,
+    });
+  }
+
   Future<void> addPickUpAndDestination(
       {required GeoPoint location,
       required String userId,
@@ -91,7 +99,8 @@ class AuthDataSource {
                 userType: doc["userType"],
                 localization: doc["localization"],
                 destination: doc["destination"],
-                findRoute: doc["findRoute"]))
+                distance: doc["distance"]+ 0.0,
+                findRoute: doc["findRoute"] ))
             .where((element) =>
                 element.email.toString() == auth.currentUser!.email.toString())
             .toList());

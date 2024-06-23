@@ -76,6 +76,7 @@ class AuthDataSource {
     return FirebaseFirestore.instance.collection("users").doc(userId).update({
       "localization": location,
       "destination": destination,
+      "findRoute": true
     });
   }
 

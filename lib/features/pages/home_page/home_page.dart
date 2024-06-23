@@ -97,28 +97,63 @@ class HomePage extends HookConsumerWidget {
     //       .map((point) => LatLng(point.latitude, point.longitude))
     //       .toList();
     // }
-
-    Future<Polyline> generatePolylinesFromPoints(
-        List<LatLng> polylineCoordinates) async {
+    final polylinesStateT = useState<Map<PolylineId, Polyline>>({});
+    final routePoints = useState<List<LatLng>>([]);
+    Future<List<LatLng>> fetchPolylinePoints() async {
       print("GENERATE");
-      return Polyline(
-          polylineId: PolylineId("1"),
-          width: 5,
-          color: Colors.yellow,
-          points: polylineCoordinates);
+      final points = await ref
+          .read(suggestionControllerProvider.notifier)
+          .getRoute(
+              start: LatLng(
+                user.localization!.latitude,
+                user.localization!.longitude,
+              ),
+              end: LatLng(
+                  user.destination!.latitude, user.destination!.longitude));
+      print("PAGE CAL : $points");
+      routePoints.value.addAll(points);
+      return points;
+
+      print("PAGE CAL route : ${routePoints.value}");
+
+      // polylinesState.value = Polyline(
+      //     polylineId: PolylineId("1"),
+      //     width: 5,
+      //     color: Colors.yellow,
+      //     points: points);
+
+      // polylinesStateT.value = {PolylineId("1"): polylinesState.value!};
+
+      // return Polyline(
+      //     polylineId: PolylineId("1"),
+      //     width: 5,
+      //     color: Colors.yellow,
+      //     points: points);
     }
 
-    // Future<void> initilazeMap() async {
-    //   final points = await fetchPolylinePoints();
-    //   generatePolylinesFromPoints(points);
-    // }
+    void generatePolylineFromPoints({required List<LatLng> points}) async {
+      final polyline = Polyline(
+          polylineId: PolylineId("1"),
+          points: points,
+          width: 10,
+          color: Colors.yellow);
+      polylinesStateT.value = {PolylineId("1"): polyline};
+    }
+
+    Future<void> initilazeMap() async {
+      final points = await fetchPolylinePoints();
+      generatePolylineFromPoints(points: points);
+    }
     // Future<void> initilazeMap() async {
     //   final points = await fetchPolylinePoints();
     //   generatePolylinesFromPoints(points);
     // }
 
-    final polylinesState = useState<Map<PolylineId, Polyline>>({});
     useEffect(() {
+      if (user.findRoute) {
+        initilazeMap();
+      } else {}
+
       // initilazeMap();
       // ref
       //     .read(locationControllerProvider.notifier)
@@ -158,12 +193,22 @@ class HomePage extends HookConsumerWidget {
                   icon: BitmapDescriptor.defaultMarker,
                   position: locationTwo),
             },
-            polylines: Set<Polyline>.of(polylinesState.value.values),
+            polylines: Set<Polyline>.of(polylinesStateT.value.values),
           ),
         ),
         Align(
           alignment: FractionalOffset.bottomCenter,
-          child: SearchBarWidget(user.id),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    initilazeMap();
+                  },
+                  child: Text("DUPA")),
+              SearchBarWidget(user.id),
+            ],
+          ),
         )
       ]),
     );

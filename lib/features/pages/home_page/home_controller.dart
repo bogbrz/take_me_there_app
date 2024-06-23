@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:take_me_there_app/domain/models/place_model.dart';
 
@@ -61,17 +62,24 @@ class SuggestionController extends StateNotifier<HomeState> {
     return welcomeResults;
   }
 
-  Future<List<List<double>>> getRoute(
-      {required String startLat,
-      required String startLng,
-      required String endLat,
-      required String endLng}) async {
+  Future<List<LatLng>> getRoute({
+    required LatLng start,
+    required LatLng end,
+  }) async {
     state = const HomeStateLoading();
-    final results = await ref.read(placesDataSourceProvider).getRoute(
-        startLng: startLng, startLat: startLat, endLng: endLng, endLat: endLat);
+    final results = await ref
+        .read(placesDataSourceProvider)
+        .getRoute(start: start, end: end);
     final features = results.features;
+    final coordList = features[0].geometry.coordinates;
 
-    return  features[0].geometry.coordinates;
+    final List<LatLng> route = [];
+
+    for (int i = 0; i < coordList.length; i++) {
+      route.add(LatLng(coordList[i][1], coordList[i][0]));
+    }
+    print("Controller : ${route}");
+    return route;
   }
 
   void updateLocation({required String userId}) async {

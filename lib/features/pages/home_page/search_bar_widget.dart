@@ -310,12 +310,12 @@ class RouteSpecificationWidget extends HookConsumerWidget {
         child: ListView(
           children: [
             Text("$pickUpPlace $pickUp,,,,, $destinationPlace $destination"),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.1,
-              child: Image(
-                image: AssetImage("assets/hatchback.png"),
-              ),
-            )
+            // SizedBox(
+            //   width: MediaQuery.of(context).size.width * 0.1,
+            //   child: Image(
+            //     image: AssetImage("assets/hatchback.png"),
+            //   ),
+            // )
           ],
         ),
       ),

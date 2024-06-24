@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:take_me_there_app/domain/models/option_model.dart';
+import 'package:take_me_there_app/features/pages/home_page/home_controller.dart';
 import 'package:take_me_there_app/features/pages/home_page/options_list.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 class TravelOptionWidget extends HookConsumerWidget {
   const TravelOptionWidget({
@@ -10,9 +13,11 @@ class TravelOptionWidget extends HookConsumerWidget {
     required this.destination,
     required this.pickUp,
     required this.distance,
+    required this.userId,
     super.key,
   });
   final String pickUpPlace;
+  final String userId;
   final String destinationPlace;
   final LatLng? pickUp;
   final LatLng? destination;
@@ -20,35 +25,107 @@ class TravelOptionWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Expanded(
-      child: Column(
-        children: [
-          Text("Choose your service"),
-          Expanded(
-            child: ListView(children: [
-              for (final option in optionsList) ...[
-                Container(
-                  margin: EdgeInsets.only(bottom: 10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      SizedBox(
-                          height: 100,
-                          child: Image(image: AssetImage(option.image))),
-                      Text(option.name),
-                      Text(
-                          "${(option.payRate * (distance / 1000)).toStringAsFixed(2)} ${option.currency}")
-                    ],
-                  ),
-                )
-              ]
-            ]),
-          )
-        ],
-      ),
+    final _isChoosen = useState<bool>(false);
+    final _chosenOption = useState<OptionModel?>(null);
+
+    if (_isChoosen.value == false) {
+      return Expanded(
+        child: Column(
+          children: [
+            Text("Choose your service"),
+            Expanded(
+              child: ListView(children: [
+                for (final option in optionsList) ...[
+                  Material(
+                    child: InkWell(
+                      onTap: () {
+                        _chosenOption.value = option;
+                        _isChoosen.value = true;
+                        ref
+                            .read(suggestionControllerProvider.notifier)
+                            .updateOptionChosen(
+                                userId: userId, optionChosen: _isChoosen.value);
+                      },
+                      child: Container(
+                        margin: EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Color.fromARGB(181, 167, 165, 165)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            SizedBox(
+                                height: 100,
+                                child: Image(image: AssetImage(option.image))),
+                            Text(option.name),
+                            Text(
+                                "${(option.payRate * (distance / 1000)).toStringAsFixed(2)} ${option.currency}")
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ]
+              ]),
+            )
+          ],
+        ),
+      );
+    } else {
+      return ChosenOptionWidget(
+        option: _chosenOption.value,
+        distance: distance,
+        userId: userId,
+        destinationPlace: destinationPlace,
+        pickUpPlace: pickUpPlace,
+      );
+    }
+  }
+}
+
+class ChosenOptionWidget extends StatelessWidget {
+  const ChosenOptionWidget({
+    required this.option,
+    required this.distance,
+    required this.pickUpPlace,
+    required this.userId,
+    required this.destinationPlace,
+    super.key,
+  });
+  final OptionModel? option;
+  final double distance;
+  final String pickUpPlace;
+  final String userId;
+  final String destinationPlace;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text("From: $pickUpPlace"),
+            Text("To: $destinationPlace"),
+          ],
+        ),
+        Text("Choosen service"),
+        Container(
+          margin: EdgeInsets.all(5),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Color.fromARGB(181, 167, 165, 165)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              SizedBox(
+                  height: 100, child: Image(image: AssetImage(option!.image))),
+              Text(option!.name),
+              Text(
+                  "${(option!.payRate * (distance / 1000)).toStringAsFixed(2)} ${option!.currency}")
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

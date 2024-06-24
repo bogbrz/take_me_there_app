@@ -94,6 +94,14 @@ class SuggestionController extends StateNotifier<HomeState> {
         .updateLocalization(location: geoPoint, userId: userId);
   }
 
+  void updateOptionChosen({required String userId, required bool optionChosen}) async {
+   
+  
+    ref
+        .read(authDataSourceProvider)
+        .updateOptionChosen( userId: userId, optionChosen: optionChosen);
+  }
+
   void updateDestination(
       {required String userId,
       required GeoPoint? localization,

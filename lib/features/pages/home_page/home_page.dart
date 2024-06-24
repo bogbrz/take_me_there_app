@@ -1,28 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
-import 'dart:typed_data';
 
-import 'package:auto_route/auto_route.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:map_picker/map_picker.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_controller.dart';
 import 'package:take_me_there_app/features/pages/home_page/search_bar_widget.dart';
-
 import 'package:take_me_there_app/map_config/google_maps_dependecy.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:take_me_there_app/providers/auth_provider.dart';
-import 'package:take_me_there_app/providers/google_places_provider.dart';
 
 class HomePage extends HookConsumerWidget {
   HomePage({super.key});
@@ -207,17 +194,7 @@ class HomePage extends HookConsumerWidget {
         ),
         Align(
           alignment: FractionalOffset.bottomCenter,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ElevatedButton(
-                  onPressed: () {
-                    initilazeMap();
-                  },
-                  child: Text("DUPA")),
-              SearchBarWidget(user.distance, user.id),
-            ],
-          ),
+          child: SearchBarWidget(user.distance, user.id),
         )
       ]),
     );

@@ -13,7 +13,7 @@ final optionsList = <OptionModel>[
       currency: "PLN"),
   OptionModel(
       image: "assets/cabriolet.png",
-      name: "High class",
+      name: "Comfort",
       payRate: 1.5,
       currency: "PLN"),
   OptionModel(

@@ -36,7 +36,8 @@ class AuthDataSource {
           "localization": GeoPoint(0, 0),
           "destination": GeoPoint(0, 0),
           "findRoute": false,
-          "distance": 0
+          "distance": 0,
+          "optionChosen" : false
         });
       });
 
@@ -87,6 +88,15 @@ class AuthDataSource {
       "findRoute": true
     });
   }
+   Future<void> updateOptionChosen(
+      {
+      required String userId,
+      required bool optionChosen}) {
+    return FirebaseFirestore.instance.collection("users").doc(userId).update({
+      "optionChosen": true,
+     
+    });
+  }
 
   Stream<List<UserModel>> getUserById() {
     return FirebaseFirestore.instance.collection("users").snapshots().map(
@@ -100,7 +110,8 @@ class AuthDataSource {
                 localization: doc["localization"],
                 destination: doc["destination"],
                 distance: doc["distance"]+ 0.0,
-                findRoute: doc["findRoute"] ))
+                findRoute: doc["findRoute"],
+                optionChosen: doc["optionChosen"] ))
             .where((element) =>
                 element.email.toString() == auth.currentUser!.email.toString())
             .toList());

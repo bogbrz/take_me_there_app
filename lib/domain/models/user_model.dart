@@ -15,6 +15,7 @@ class UserModel with _$UserModel {
     required GeoPoint? localization,
     required GeoPoint? destination,
     required double distance,
-    @Default(false) bool findRoute
+    @Default(false) bool findRoute,
+    @Default(false) bool optionChosen,
   }) = _UserModel;
 }

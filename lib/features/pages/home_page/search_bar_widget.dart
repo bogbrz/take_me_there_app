@@ -34,7 +34,26 @@ class SearchBarWidget extends HookConsumerWidget {
     final _isSearchingDestination = useState<bool>(false);
     final _pickUpLatLng = useState<LatLng?>(null);
     final _destinationLatLng = useState<LatLng?>(null);
-    final suggestionLenght = useState<double>(0);
+
+    // ref.listen(userStreamProvider, (previous, next) {
+    //   final previousUser = previous?.value?[0];
+    //   final currentUser = next.value![0];
+    //   if (previousUser?.optionChosen == currentUser.optionChosen &&
+    //       currentUser.optionChosen) {
+    //
+    //     _searchBarHeigh.value = MediaQuery.of(context).size.height * 0.27;
+    //   }
+    // });
+
+    ref.listen(userStreamProvider, (previous, next) {
+      final previousUser = previous?.value?[0];
+      final currentUser = next.value![0];
+      if (previousUser?.optionChosen != currentUser.optionChosen &&
+          currentUser.optionChosen) {
+        print("Changes");
+        _searchBarHeigh.value = MediaQuery.of(context).size.height * 0.35;
+      }
+    });
 
     bool areFieldsEmpty() {
       return pickUpLocationController.text.toString().isEmpty ||
@@ -283,6 +302,7 @@ class SearchBarWidget extends HookConsumerWidget {
               ),
             ] else ...[
               TravelOptionWidget(
+                userId: userId,
                 distance: distance,
                 pickUpPlace: pickUpLocationController.value.text,
                 destinationPlace: destinationController.value.text,

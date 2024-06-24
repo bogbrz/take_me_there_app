@@ -25,6 +25,7 @@ mixin _$UserModel {
   GeoPoint? get destination => throw _privateConstructorUsedError;
   double get distance => throw _privateConstructorUsedError;
   bool get findRoute => throw _privateConstructorUsedError;
+  bool get optionChosen => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $UserModelCopyWith<UserModel> get copyWith =>
@@ -45,7 +46,8 @@ abstract class $UserModelCopyWith<$Res> {
       GeoPoint? localization,
       GeoPoint? destination,
       double distance,
-      bool findRoute});
+      bool findRoute,
+      bool optionChosen});
 }
 
 /// @nodoc
@@ -70,6 +72,7 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? destination = freezed,
     Object? distance = null,
     Object? findRoute = null,
+    Object? optionChosen = null,
   }) {
     return _then(_value.copyWith(
       email: null == email
@@ -108,6 +111,10 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.findRoute
           : findRoute // ignore: cast_nullable_to_non_nullable
               as bool,
+      optionChosen: null == optionChosen
+          ? _value.optionChosen
+          : optionChosen // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -129,7 +136,8 @@ abstract class _$$UserModelImplCopyWith<$Res>
       GeoPoint? localization,
       GeoPoint? destination,
       double distance,
-      bool findRoute});
+      bool findRoute,
+      bool optionChosen});
 }
 
 /// @nodoc
@@ -152,6 +160,7 @@ class __$$UserModelImplCopyWithImpl<$Res>
     Object? destination = freezed,
     Object? distance = null,
     Object? findRoute = null,
+    Object? optionChosen = null,
   }) {
     return _then(_$UserModelImpl(
       email: null == email
@@ -190,6 +199,10 @@ class __$$UserModelImplCopyWithImpl<$Res>
           ? _value.findRoute
           : findRoute // ignore: cast_nullable_to_non_nullable
               as bool,
+      optionChosen: null == optionChosen
+          ? _value.optionChosen
+          : optionChosen // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -206,7 +219,8 @@ class _$UserModelImpl implements _UserModel {
       required this.localization,
       required this.destination,
       required this.distance,
-      this.findRoute = false});
+      this.findRoute = false,
+      this.optionChosen = false});
 
   @override
   final String email;
@@ -227,10 +241,13 @@ class _$UserModelImpl implements _UserModel {
   @override
   @JsonKey()
   final bool findRoute;
+  @override
+  @JsonKey()
+  final bool optionChosen;
 
   @override
   String toString() {
-    return 'UserModel(email: $email, username: $username, id: $id, phoneNumber: $phoneNumber, userType: $userType, localization: $localization, destination: $destination, distance: $distance, findRoute: $findRoute)';
+    return 'UserModel(email: $email, username: $username, id: $id, phoneNumber: $phoneNumber, userType: $userType, localization: $localization, destination: $destination, distance: $distance, findRoute: $findRoute, optionChosen: $optionChosen)';
   }
 
   @override
@@ -253,12 +270,14 @@ class _$UserModelImpl implements _UserModel {
             (identical(other.distance, distance) ||
                 other.distance == distance) &&
             (identical(other.findRoute, findRoute) ||
-                other.findRoute == findRoute));
+                other.findRoute == findRoute) &&
+            (identical(other.optionChosen, optionChosen) ||
+                other.optionChosen == optionChosen));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, email, username, id, phoneNumber,
-      userType, localization, destination, distance, findRoute);
+      userType, localization, destination, distance, findRoute, optionChosen);
 
   @JsonKey(ignore: true)
   @override
@@ -277,7 +296,8 @@ abstract class _UserModel implements UserModel {
       required final GeoPoint? localization,
       required final GeoPoint? destination,
       required final double distance,
-      final bool findRoute}) = _$UserModelImpl;
+      final bool findRoute,
+      final bool optionChosen}) = _$UserModelImpl;
 
   @override
   String get email;
@@ -297,6 +317,8 @@ abstract class _UserModel implements UserModel {
   double get distance;
   @override
   bool get findRoute;
+  @override
+  bool get optionChosen;
   @override
   @JsonKey(ignore: true)
   _$$UserModelImplCopyWith<_$UserModelImpl> get copyWith =>

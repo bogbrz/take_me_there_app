@@ -37,7 +37,8 @@ class AuthDataSource {
           "destination": GeoPoint(0, 0),
           "findRoute": false,
           "distance": 0,
-          "optionChosen" : false
+          "optionChosen": false,
+          "lookingForDriver": false
         });
       });
 
@@ -88,13 +89,18 @@ class AuthDataSource {
       "findRoute": true
     });
   }
-   Future<void> updateOptionChosen(
-      {
-      required String userId,
-      required bool optionChosen}) {
+
+  Future<void> updateOptionChosen(
+      {required String userId, required bool optionChosen}) {
     return FirebaseFirestore.instance.collection("users").doc(userId).update({
       "optionChosen": true,
-     
+    });
+  }
+
+  Future<void> updateLookingForDriver(
+      {required String userId, required bool lookingForDriver}) {
+    return FirebaseFirestore.instance.collection("users").doc(userId).update({
+      "lookingForDriver": true,
     });
   }
 
@@ -109,9 +115,10 @@ class AuthDataSource {
                 userType: doc["userType"],
                 localization: doc["localization"],
                 destination: doc["destination"],
-                distance: doc["distance"]+ 0.0,
+                distance: doc["distance"] + 0.0,
                 findRoute: doc["findRoute"],
-                optionChosen: doc["optionChosen"] ))
+                optionChosen: doc["optionChosen"],
+                lookingForDriver: doc["lookingForDriver"]))
             .where((element) =>
                 element.email.toString() == auth.currentUser!.email.toString())
             .toList());

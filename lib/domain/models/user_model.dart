@@ -17,5 +17,6 @@ class UserModel with _$UserModel {
     required double distance,
     @Default(false) bool findRoute,
     @Default(false) bool optionChosen,
+    @Default(false) bool lookingForDriver,
   }) = _UserModel;
 }

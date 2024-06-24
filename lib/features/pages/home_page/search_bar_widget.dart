@@ -34,6 +34,7 @@ class SearchBarWidget extends HookConsumerWidget {
     final _isSearchingDestination = useState<bool>(false);
     final _pickUpLatLng = useState<LatLng?>(null);
     final _destinationLatLng = useState<LatLng?>(null);
+    final _isLookingForDriver = useState<bool>(false);
 
     // ref.listen(userStreamProvider, (previous, next) {
     //   final previousUser = previous?.value?[0];
@@ -51,7 +52,12 @@ class SearchBarWidget extends HookConsumerWidget {
       if (previousUser?.optionChosen != currentUser.optionChosen &&
           currentUser.optionChosen) {
         print("Changes");
-        _searchBarHeigh.value = MediaQuery.of(context).size.height * 0.35;
+        _searchBarHeigh.value = MediaQuery.of(context).size.height * 0.45;
+      } else if (previousUser?.lookingForDriver !=
+              currentUser.lookingForDriver &&
+          currentUser.lookingForDriver) {
+        _isLookingForDriver.value = true;
+        _searchBarHeigh.value = MediaQuery.of(context).size.height * 0.27;
       }
     });
 
@@ -300,6 +306,13 @@ class SearchBarWidget extends HookConsumerWidget {
                   ),
                 ],
               ),
+            ] else if (_isLookingForDriver.value) ...[
+              Column(
+                children: [
+                  CircularProgressIndicator(),
+                  Text("Looking for driver")
+                ],
+              )
             ] else ...[
               TravelOptionWidget(
                 userId: userId,

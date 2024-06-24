@@ -102,6 +102,14 @@ class SuggestionController extends StateNotifier<HomeState> {
         .updateOptionChosen( userId: userId, optionChosen: optionChosen);
   }
 
+  void updateLookingForDriver({required String userId, required bool lookingForDriver}) async {
+   
+  
+    ref
+        .read(authDataSourceProvider)
+        .updateLookingForDriver( userId: userId, lookingForDriver: lookingForDriver);
+  }
+
   void updateDestination(
       {required String userId,
       required GeoPoint? localization,

@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:take_me_there_app/domain/models/option_model.dart';
@@ -83,7 +86,7 @@ class TravelOptionWidget extends HookConsumerWidget {
   }
 }
 
-class ChosenOptionWidget extends StatelessWidget {
+class ChosenOptionWidget extends HookConsumerWidget {
   const ChosenOptionWidget({
     required this.option,
     required this.distance,
@@ -98,7 +101,11 @@ class ChosenOptionWidget extends StatelessWidget {
   final String userId;
   final String destinationPlace;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final _lookingForDriver = useState<bool>(false);
+    final _paymentIcon = useState<StatelessWidget>(
+      CardOption(),
+    );
     return Column(
       children: [
         Row(
@@ -121,11 +128,83 @@ class ChosenOptionWidget extends StatelessWidget {
                   height: 100, child: Image(image: AssetImage(option!.image))),
               Text(option!.name),
               Text(
-                  "${(option!.payRate * (distance / 1000)).toStringAsFixed(2)} ${option!.currency}")
+                  "${(option!.payRate * (distance / 1000)).toStringAsFixed(2)} ${option!.currency}"),
             ],
           ),
         ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: PopupMenuButton(
+              onSelected: (value) {
+                _paymentIcon.value = value;
+              },
+              icon: _paymentIcon.value,
+              itemBuilder: ((context) => [
+                    PopupMenuItem(
+                      value: CardOption(),
+                      child: CardOption(),
+                    ),
+                    PopupMenuItem(
+                      value: CashOption(),
+                      child: CashOption(),
+                    )
+                  ])),
+        ),
+        ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.blueAccent,
+            ),
+            onPressed: () {
+              _lookingForDriver.value = true;
+              ref
+                  .read(suggestionControllerProvider.notifier)
+                  .updateLookingForDriver(
+                      userId: userId,
+                      lookingForDriver: _lookingForDriver.value);
+            },
+            child: Text("Take me there"))
       ],
     );
+  }
+}
+
+class CardOption extends StatelessWidget {
+  const CardOption({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        height: 50,
+        child: Row(
+          children: [
+            Image(
+              image: AssetImage("assets/credit-card.png"),
+            ),
+            Text("****2137")
+          ],
+        ));
+  }
+}
+
+class CashOption extends StatelessWidget {
+  const CashOption({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+        height: 50,
+        child: Row(
+          children: [
+            Image(
+              image: AssetImage("assets/money.png"),
+            ),
+            Text(" Cash")
+          ],
+        ));
   }
 }

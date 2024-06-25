@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:take_me_there_app/domain/models/place_model.dart';
@@ -11,12 +12,16 @@ import 'package:take_me_there_app/features/pages/home_page/travel_option_widget.
 
 class SearchBarWidget extends HookConsumerWidget {
   SearchBarWidget(
+    this.pickUpPlaceCoords,
+    this.pickUpPlaceMark,
     this.distance,
     this.userId, {
     super.key,
   });
   final String userId;
   final double distance;
+  final Placemark? pickUpPlaceMark;
+  final GeoPoint? pickUpPlaceCoords;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,6 +40,8 @@ class SearchBarWidget extends HookConsumerWidget {
     final _pickUpLatLng = useState<LatLng?>(null);
     final _destinationLatLng = useState<LatLng?>(null);
     final _isLookingForDriver = useState<bool>(false);
+
+    final _settingPickUp = useState<bool>(false);
 
     // ref.listen(userStreamProvider, (previous, next) {
     //   final previousUser = previous?.value?[0];
@@ -58,6 +65,10 @@ class SearchBarWidget extends HookConsumerWidget {
           currentUser.lookingForDriver) {
         _isLookingForDriver.value = true;
         _searchBarHeigh.value = MediaQuery.of(context).size.height * 0.27;
+      } else if (previousUser?.settingPickUp != currentUser.settingPickUp &&
+          currentUser.settingPickUp) {
+        _settingPickUp.value = true;
+        _searchBarHeigh.value = MediaQuery.of(context).size.height * 0.20;
       }
     });
 
@@ -311,6 +322,27 @@ class SearchBarWidget extends HookConsumerWidget {
                 children: [
                   CircularProgressIndicator(),
                   Text("Looking for driver")
+                ],
+              )
+            ] else if (_settingPickUp.value) ...[
+              Column(
+                children: [
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.blueAccent,
+                      ),
+                      onPressed: () {
+                        ref
+                            .read(suggestionControllerProvider.notifier)
+                            .updateLookingForDriver(
+                                userId: userId,
+                                lookingForDriver: true,
+                                pickUpPlace: pickUpPlaceCoords!);
+
+                                
+                      },
+                      child: Text("Set pick up place")),
                 ],
               )
             ] else ...[

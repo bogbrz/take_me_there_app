@@ -102,7 +102,7 @@ class ChosenOptionWidget extends HookConsumerWidget {
   final String destinationPlace;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final _lookingForDriver = useState<bool>(false);
+    final _settingPickUp = useState<bool>(false);
     final _paymentIcon = useState<StatelessWidget>(
       CardOption(),
     );
@@ -156,12 +156,16 @@ class ChosenOptionWidget extends HookConsumerWidget {
               foregroundColor: Colors.blueAccent,
             ),
             onPressed: () {
-              _lookingForDriver.value = true;
+              _settingPickUp.value = true;
+              // ref
+              //     .read(suggestionControllerProvider.notifier)
+              //     .updateLookingForDriver(
+              //         userId: userId,
+              //         lookingForDriver: _settingPickUp.value);
               ref
                   .read(suggestionControllerProvider.notifier)
-                  .updateLookingForDriver(
-                      userId: userId,
-                      lookingForDriver: _lookingForDriver.value);
+                  .updateSettingPickUp(
+                      userId: userId, settingPickUp: _settingPickUp.value);
             },
             child: Text("Take me there"))
       ],

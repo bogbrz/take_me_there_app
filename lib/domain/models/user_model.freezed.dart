@@ -27,6 +27,7 @@ mixin _$UserModel {
   bool get findRoute => throw _privateConstructorUsedError;
   bool get optionChosen => throw _privateConstructorUsedError;
   bool get lookingForDriver => throw _privateConstructorUsedError;
+  bool get settingPickUp => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $UserModelCopyWith<UserModel> get copyWith =>
@@ -49,7 +50,8 @@ abstract class $UserModelCopyWith<$Res> {
       double distance,
       bool findRoute,
       bool optionChosen,
-      bool lookingForDriver});
+      bool lookingForDriver,
+      bool settingPickUp});
 }
 
 /// @nodoc
@@ -76,6 +78,7 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? findRoute = null,
     Object? optionChosen = null,
     Object? lookingForDriver = null,
+    Object? settingPickUp = null,
   }) {
     return _then(_value.copyWith(
       email: null == email
@@ -122,6 +125,10 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.lookingForDriver
           : lookingForDriver // ignore: cast_nullable_to_non_nullable
               as bool,
+      settingPickUp: null == settingPickUp
+          ? _value.settingPickUp
+          : settingPickUp // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -145,7 +152,8 @@ abstract class _$$UserModelImplCopyWith<$Res>
       double distance,
       bool findRoute,
       bool optionChosen,
-      bool lookingForDriver});
+      bool lookingForDriver,
+      bool settingPickUp});
 }
 
 /// @nodoc
@@ -170,6 +178,7 @@ class __$$UserModelImplCopyWithImpl<$Res>
     Object? findRoute = null,
     Object? optionChosen = null,
     Object? lookingForDriver = null,
+    Object? settingPickUp = null,
   }) {
     return _then(_$UserModelImpl(
       email: null == email
@@ -216,6 +225,10 @@ class __$$UserModelImplCopyWithImpl<$Res>
           ? _value.lookingForDriver
           : lookingForDriver // ignore: cast_nullable_to_non_nullable
               as bool,
+      settingPickUp: null == settingPickUp
+          ? _value.settingPickUp
+          : settingPickUp // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -234,7 +247,8 @@ class _$UserModelImpl implements _UserModel {
       required this.distance,
       this.findRoute = false,
       this.optionChosen = false,
-      this.lookingForDriver = false});
+      this.lookingForDriver = false,
+      this.settingPickUp = false});
 
   @override
   final String email;
@@ -261,10 +275,13 @@ class _$UserModelImpl implements _UserModel {
   @override
   @JsonKey()
   final bool lookingForDriver;
+  @override
+  @JsonKey()
+  final bool settingPickUp;
 
   @override
   String toString() {
-    return 'UserModel(email: $email, username: $username, id: $id, phoneNumber: $phoneNumber, userType: $userType, localization: $localization, destination: $destination, distance: $distance, findRoute: $findRoute, optionChosen: $optionChosen, lookingForDriver: $lookingForDriver)';
+    return 'UserModel(email: $email, username: $username, id: $id, phoneNumber: $phoneNumber, userType: $userType, localization: $localization, destination: $destination, distance: $distance, findRoute: $findRoute, optionChosen: $optionChosen, lookingForDriver: $lookingForDriver, settingPickUp: $settingPickUp)';
   }
 
   @override
@@ -291,7 +308,9 @@ class _$UserModelImpl implements _UserModel {
             (identical(other.optionChosen, optionChosen) ||
                 other.optionChosen == optionChosen) &&
             (identical(other.lookingForDriver, lookingForDriver) ||
-                other.lookingForDriver == lookingForDriver));
+                other.lookingForDriver == lookingForDriver) &&
+            (identical(other.settingPickUp, settingPickUp) ||
+                other.settingPickUp == settingPickUp));
   }
 
   @override
@@ -307,7 +326,8 @@ class _$UserModelImpl implements _UserModel {
       distance,
       findRoute,
       optionChosen,
-      lookingForDriver);
+      lookingForDriver,
+      settingPickUp);
 
   @JsonKey(ignore: true)
   @override
@@ -328,7 +348,8 @@ abstract class _UserModel implements UserModel {
       required final double distance,
       final bool findRoute,
       final bool optionChosen,
-      final bool lookingForDriver}) = _$UserModelImpl;
+      final bool lookingForDriver,
+      final bool settingPickUp}) = _$UserModelImpl;
 
   @override
   String get email;
@@ -352,6 +373,8 @@ abstract class _UserModel implements UserModel {
   bool get optionChosen;
   @override
   bool get lookingForDriver;
+  @override
+  bool get settingPickUp;
   @override
   @JsonKey(ignore: true)
   _$$UserModelImplCopyWith<_$UserModelImpl> get copyWith =>

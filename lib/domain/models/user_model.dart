@@ -18,5 +18,6 @@ class UserModel with _$UserModel {
     @Default(false) bool findRoute,
     @Default(false) bool optionChosen,
     @Default(false) bool lookingForDriver,
+    @Default(false) bool settingPickUp,
   }) = _UserModel;
 }

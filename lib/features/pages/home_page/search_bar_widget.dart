@@ -7,6 +7,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:take_me_there_app/domain/models/place_model.dart';
+import 'package:take_me_there_app/domain/models/user_model.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_controller.dart';
 import 'package:take_me_there_app/features/pages/home_page/travel_option_widget.dart';
 
@@ -15,10 +16,12 @@ class SearchBarWidget extends HookConsumerWidget {
     this.pickUpPlaceCoords,
     this.pickUpPlaceMark,
     this.distance,
-    this.userId, {
+    this.userId,
+    this.user, {
     super.key,
   });
   final String userId;
+  final UserModel user;
   final double distance;
   final Placemark? pickUpPlaceMark;
   final GeoPoint? pickUpPlaceCoords;
@@ -120,6 +123,9 @@ class SearchBarWidget extends HookConsumerWidget {
                     alignment: Alignment.topLeft,
                     child: IconButton(
                         onPressed: () {
+                          ref
+                              .read(suggestionControllerProvider.notifier)
+                              .resetValues(userId: userId);
                           _searchBarHeigh.value =
                               MediaQuery.of(context).size.height * 0.27;
                           widgetContetController.value = 0;
@@ -319,6 +325,7 @@ class SearchBarWidget extends HookConsumerWidget {
               ),
             ] else if (_isLookingForDriver.value) ...[
               Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   CircularProgressIndicator(),
                   Text("Looking for driver")
@@ -336,11 +343,10 @@ class SearchBarWidget extends HookConsumerWidget {
                         ref
                             .read(suggestionControllerProvider.notifier)
                             .updateLookingForDriver(
+                                destination: user.destination!,
                                 userId: userId,
                                 lookingForDriver: true,
                                 pickUpPlace: pickUpPlaceCoords!);
-
-                                
                       },
                       child: Text("Set pick up place")),
                 ],

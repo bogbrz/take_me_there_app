@@ -52,7 +52,7 @@ class _LocationPickPageState extends State<LocationPickPage> {
               onCameraMoveStarted: () {
                 // notify map is moving
                 mapPickerController.mapMoving!();
-                textController.text = "checking ...";
+                
               },
               onCameraMove: (cameraPosition) {
                 this.cameraPosition = cameraPosition;

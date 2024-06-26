@@ -102,12 +102,12 @@ class SuggestionController extends StateNotifier<HomeState> {
         .updateOptionChosen( userId: userId, optionChosen: optionChosen);
   }
 
-  void updateLookingForDriver({required String userId, required bool lookingForDriver, required GeoPoint pickUpPlace}) async {
+  void updateLookingForDriver({required String userId, required bool lookingForDriver, required GeoPoint pickUpPlace, required GeoPoint destination}) async {
    
   
     ref
         .read(authDataSourceProvider)
-        .updateLookingForDriver( userId: userId, lookingForDriver: lookingForDriver, pickUpPlace: pickUpPlace);
+        .updateLookingForDriver( userId: userId, lookingForDriver: lookingForDriver, pickUpPlace: pickUpPlace,destination: destination);
   }
    void updateSettingPickUp({required String userId, required bool settingPickUp}) async {
    
@@ -115,6 +115,13 @@ class SuggestionController extends StateNotifier<HomeState> {
     ref
         .read(authDataSourceProvider)
         .updateSettingPickUp( userId: userId, settingPickUp: settingPickUp);
+  }
+   void resetValues({required String userId,}) async {
+   
+  
+    ref
+        .read(authDataSourceProvider)
+        .resetValues( userId: userId, );
   }
 
   void updateDestination(

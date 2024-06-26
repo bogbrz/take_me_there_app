@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -9,6 +10,8 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:take_me_there_app/app/core/enums.dart';
+import 'package:take_me_there_app/domain/models/user_model.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_controller.dart';
 import 'package:take_me_there_app/features/pages/home_page/search_bar_widget.dart';
 import 'package:take_me_there_app/map_config/google_maps_dependecy.dart';
@@ -63,11 +66,18 @@ class HomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userStreamProvider).value![0];
+
+    final List<LatLng> driversLocation = [];
+    final List<Marker> driversMarkers = [];
+
     final _pickUpAreaVisible = useState<bool>(false);
     final _pickUpPlaceMark = useState<Placemark?>(null);
     final _pickUpPlaceCoords = useState<GeoPoint?>(null);
-    CameraPosition cameraPosition = const CameraPosition(
-      target: LatLng(41.311158, 69.279737),
+    final _customIcon = useState<BitmapDescriptor?>(null);
+
+    CameraPosition cameraPositionP = CameraPosition(
+      target: LatLng(
+          user.localization?.latitude ?? 0, user.localization?.longitude ?? 0),
       zoom: 14.4746,
     );
     // final LatLng locationOne = LatLng(
@@ -99,7 +109,9 @@ class HomePage extends HookConsumerWidget {
           .getRoute(
               userId: user.id,
               start: LatLng(
-                  user.localization!.latitude, user.localization!.longitude),
+                  // user.localization!.latitude, user.localization!.longitude
+                  _pickUpPlaceCoords.value!.latitude,
+                  _pickUpPlaceCoords.value!.longitude),
               end: LatLng(
                   user.destination!.latitude, user.destination!.longitude));
       print("PAGE CAL : $points");
@@ -127,7 +139,7 @@ class HomePage extends HookConsumerWidget {
       final polyline = Polyline(
           polylineId: PolylineId("1"),
           points: points,
-          width: 10,
+          width: 5,
           color: Colors.yellow);
       polylinesStateT.value = {PolylineId("1"): polyline};
     }
@@ -146,6 +158,7 @@ class HomePage extends HookConsumerWidget {
       final currentUser = next.value![0];
       if (previousUser?.findRoute != currentUser.findRoute &&
           currentUser.findRoute) {
+        fetchPolylinePoints();
         // initilazeMap();
       } else if (previousUser?.settingPickUp != currentUser.settingPickUp &&
           currentUser.settingPickUp) {
@@ -154,6 +167,7 @@ class HomePage extends HookConsumerWidget {
               currentUser.lookingForDriver &&
           currentUser.lookingForDriver) {
         _pickUpAreaVisible.value = false;
+
         initilazeMap();
       }
     });
@@ -206,19 +220,28 @@ class HomePage extends HookConsumerWidget {
                       northeast: LatLng(user.localization!.latitude + 0.0042,
                           user.localization!.longitude + 0.0045)))
                   : CameraTargetBounds.unbounded,
+              onCameraMoveStarted: () {
+                // notify map is moving
+                mapPickerController.mapMoving!();
+              },
+              onCameraMove: (cameraPosition) {
+                cameraPositionP = cameraPosition;
+              },
               onCameraIdle: () async {
                 mapPickerController.mapFinishedMoving!();
                 //get address name from camera position
                 List<Placemark> placemarks = await placemarkFromCoordinates(
-                  cameraPosition.target.latitude,
-                  cameraPosition.target.longitude,
+                  cameraPositionP.target.latitude,
+                  cameraPositionP.target.longitude,
                 );
 
                 _pickUpPlaceMark.value = placemarks[0];
-                print(placemarks);
+                print("${placemarks}   ");
                 _pickUpPlaceCoords.value = GeoPoint(
-                    cameraPosition.target.latitude,
-                    cameraPosition.target.longitude);
+                    cameraPositionP.target.latitude,
+                    cameraPositionP.target.longitude);
+
+                print("COORDS  ${cameraPositionP.target}");
 
                 // update the ui with the address
               },
@@ -234,29 +257,42 @@ class HomePage extends HookConsumerWidget {
                     fillColor: Color.fromARGB(23, 255, 235, 59))
               },
               markers: {
+                // Marker(
+                //     markerId: MarkerId("value1"),
+                //     icon: BitmapDescriptor.defaultMarker,
+                //     position: LatLng(user.localization!.latitude,
+                //         user.localization!.longitude)),
                 Marker(
-                    markerId: MarkerId("value1"),
-                    icon: BitmapDescriptor.defaultMarker,
-                    position: LatLng(user.localization!.latitude,
-                        user.localization!.longitude)),
+                  visible: user.lookingForDriver,
+                  markerId: MarkerId("pickUp"),
+                  icon: BitmapDescriptor.defaultMarker,
+                  position: LatLng(user.localization!.latitude,
+                      user.localization!.longitude),
+                ),
                 Marker(
-                    markerId: MarkerId("value2"),
+                    visible: user.lookingForDriver,
+                    markerId: MarkerId("destination"),
                     icon: BitmapDescriptor.defaultMarker,
                     position: LatLng(user.destination!.latitude,
                         user.destination!.longitude)),
+
+                for (final marker in driversMarkers) ...{marker}
               },
-              polylines: Set<Polyline>.of(polylinesStateT.value.values),
+              polylines: user.lookingForDriver == false
+                  ? Set()
+                  : Set<Polyline>.of(polylinesStateT.value.values),
             ),
           ),
         ),
         Align(
           alignment: FractionalOffset.bottomCenter,
           child: SearchBarWidget(
-              GeoPoint(cameraPosition.target.latitude,
-                  cameraPosition.target.longitude),
+              GeoPoint(_pickUpPlaceCoords.value?.latitude ?? 0,
+                  _pickUpPlaceCoords.value?.longitude ?? 0),
               _pickUpPlaceMark.value,
               user.distance,
-              user.id),
+              user.id,
+              user),
         )
       ]),
     );

@@ -73,6 +73,16 @@ class AuthDataSource {
     });
   }
 
+  Future<void> resetValues({required String userId}) {
+    return FirebaseFirestore.instance.collection("users").doc(userId).update({
+      "findRoute": false,
+      "lookingForDriver": false,
+      "distance": 0,
+      "optionChosen": false,
+      "settingPickUp": false,
+    });
+  }
+
   Future<void> updateDistance(
       {required double distance, required String userId}) {
     return FirebaseFirestore.instance.collection("users").doc(userId).update({
@@ -101,11 +111,18 @@ class AuthDataSource {
   Future<void> updateLookingForDriver(
       {required String userId,
       required bool lookingForDriver,
-      required GeoPoint pickUpPlace}) {
-    return FirebaseFirestore.instance.collection("users").doc(userId).update({
+      required GeoPoint pickUpPlace,
+      required GeoPoint destination}) {
+    FirebaseFirestore.instance.collection("users").doc(userId).update({
       "lookingForDriver": lookingForDriver,
       "localization": pickUpPlace,
       "settingPickUp": false
+    });
+    return FirebaseFirestore.instance.collection("rides").add({
+      "passagerId": userId,
+      "pickUpLocation": pickUpPlace,
+      "destination": destination,
+      "driverId": "",
     });
   }
 
@@ -134,6 +151,25 @@ class AuthDataSource {
                 settingPickUp: doc["settingPickUp"]))
             .where((element) =>
                 element.email.toString() == auth.currentUser!.email.toString())
+            .toList());
+  }
+
+  Stream<List<UserModel>> getAllUsers() {
+    return FirebaseFirestore.instance.collection("users").snapshots().map(
+        (snapshot) => snapshot.docs
+            .map((doc) => UserModel(
+                email: doc["email"],
+                username: doc["username"],
+                id: doc.id,
+                phoneNumber: doc["phoneNumber"],
+                userType: doc["userType"],
+                localization: doc["localization"],
+                destination: doc["destination"],
+                distance: doc["distance"] + 0.0,
+                findRoute: doc["findRoute"],
+                optionChosen: doc["optionChosen"],
+                lookingForDriver: doc["lookingForDriver"],
+                settingPickUp: doc["settingPickUp"]))
             .toList());
   }
 

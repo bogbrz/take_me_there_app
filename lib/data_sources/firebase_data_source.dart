@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
 import 'package:take_me_there_app/app/core/enums.dart';
+import 'package:take_me_there_app/domain/models/ride_model.dart';
 import 'package:take_me_there_app/domain/models/user_model.dart';
 
 @injectable
@@ -123,6 +123,7 @@ class AuthDataSource {
       "pickUpLocation": pickUpPlace,
       "destination": destination,
       "driverId": "",
+      "driverLocation": null
     });
   }
 
@@ -154,7 +155,7 @@ class AuthDataSource {
             .toList());
   }
 
-  Stream<List<UserModel>> getAllUsers() {
+  Stream<List<UserModel>> getDriverUsers() {
     return FirebaseFirestore.instance.collection("users").snapshots().map(
         (snapshot) => snapshot.docs
             .map((doc) => UserModel(
@@ -170,19 +171,43 @@ class AuthDataSource {
                 optionChosen: doc["optionChosen"],
                 lookingForDriver: doc["lookingForDriver"],
                 settingPickUp: doc["settingPickUp"]))
+            .where((element) =>
+                element.userType.toString() == UserType.driver.toString())
             .toList());
   }
 
-  Future<User?> getUser() async {
-    print("DATA SOURCE ${auth.currentUser}");
-    return auth.currentUser;
+  Stream<List<UserModel>> getClientUsers() {
+    return FirebaseFirestore.instance.collection("users").snapshots().map(
+        (snapshot) => snapshot.docs
+            .map((doc) => UserModel(
+                email: doc["email"],
+                username: doc["username"],
+                id: doc.id,
+                phoneNumber: doc["phoneNumber"],
+                userType: doc["userType"],
+                localization: doc["localization"],
+                destination: doc["destination"],
+                distance: doc["distance"] + 0.0,
+                findRoute: doc["findRoute"],
+                optionChosen: doc["optionChosen"],
+                lookingForDriver: doc["lookingForDriver"],
+                settingPickUp: doc["settingPickUp"]))
+            .where((element) =>
+                element.userType.toString() == UserType.client.toString())
+            .toList());
+  }
 
-    // if (user == null) {
-    //   throw Exception("User not logged in");
-    // } else {
-    //   return UserModel(
-    //       email: "dupa", username: user.displayName!, pictureUrl: "pictureUrl");
-    // }
+  Stream<List<RideModel>> getRides() {
+    return FirebaseFirestore.instance.collection("rides").snapshots().map(
+        (snapshot) => snapshot.docs
+            .map((doc) => RideModel(
+                destination: doc["destination"],
+                pickUpLocation: doc["pickUpLocation"],
+                passagerId: doc["passagerId"],
+                driverId: doc["driverId"],
+                driverLocation: doc["driverLocation"],
+                rideId: doc.id))
+            .toList());
   }
 
   void signOut() {

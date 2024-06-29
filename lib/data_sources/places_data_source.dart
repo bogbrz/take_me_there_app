@@ -3,19 +3,11 @@
 // import 'package:take_me_there_app/domain/models/place_suggestion_model.dart';
 // import 'package:take_me_there_app/map_config/google_maps_dependecy.dart';
 
-import 'dart:math';
-
 import 'package:dio/dio.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:injectable/injectable.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:retrofit/retrofit.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:take_me_there_app/app/env/env.dart';
 import 'package:take_me_there_app/domain/models/directions_model.dart';
 import 'package:take_me_there_app/domain/models/place_model.dart';
-
-import 'package:take_me_there_app/map_config/google_maps_dependecy.dart';
 
 // part 'google_places_data_source.g.dart';
 

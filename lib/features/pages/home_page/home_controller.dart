@@ -3,7 +3,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:take_me_there_app/domain/models/place_model.dart';
-
 import 'package:take_me_there_app/features/pages/home_page/home_state.dart';
 import 'package:take_me_there_app/providers/auth_provider.dart';
 import 'package:take_me_there_app/providers/google_places_provider.dart';
@@ -15,8 +14,38 @@ class HomeController extends StreamNotifier {
   }
 }
 
-final userStreamProvider =
-    StreamProvider((ref) => ref.watch(authDataSourceProvider).getUserById());
+final userStreamProvider = StreamProvider.autoDispose(
+    (ref) => ref.watch(authDataSourceProvider).getUserById());
+
+class DriverUsersController extends StreamNotifier {
+  @override
+  Stream build() {
+    return ref.watch(authDataSourceProvider).getDriverUsers();
+  }
+}
+
+final driverUsersStreamProvider = StreamProvider.autoDispose(
+    (ref) => ref.watch(authDataSourceProvider).getDriverUsers());
+
+class Clients extends StreamNotifier {
+  @override
+  Stream build() {
+    return ref.watch(authDataSourceProvider).getClientUsers();
+  }
+}
+
+final clientUsersStreamProvider = StreamProvider.autoDispose(
+    (ref) => ref.watch(authDataSourceProvider).getClientUsers());
+
+class Rides extends StreamNotifier {
+  @override
+  Stream build() {
+    return ref.watch(authDataSourceProvider).getRides();
+  }
+}
+
+final ridesStreamProvider = StreamProvider.autoDispose(
+    (ref) => ref.watch(authDataSourceProvider).getRides());
 
 class LocationController extends StateNotifier<HomeState> {
   LocationController(this.ref) : super(const HomeStateInitial());
@@ -94,34 +123,38 @@ class SuggestionController extends StateNotifier<HomeState> {
         .updateLocalization(location: geoPoint, userId: userId);
   }
 
-  void updateOptionChosen({required String userId, required bool optionChosen}) async {
-   
-  
+  void updateOptionChosen(
+      {required String userId, required bool optionChosen}) async {
     ref
         .read(authDataSourceProvider)
-        .updateOptionChosen( userId: userId, optionChosen: optionChosen);
+        .updateOptionChosen(userId: userId, optionChosen: optionChosen);
   }
 
-  void updateLookingForDriver({required String userId, required bool lookingForDriver, required GeoPoint pickUpPlace, required GeoPoint destination}) async {
-   
-  
-    ref
-        .read(authDataSourceProvider)
-        .updateLookingForDriver( userId: userId, lookingForDriver: lookingForDriver, pickUpPlace: pickUpPlace,destination: destination);
+  void updateLookingForDriver(
+      {required String userId,
+      required bool lookingForDriver,
+      required GeoPoint pickUpPlace,
+      required GeoPoint destination}) async {
+    ref.read(authDataSourceProvider).updateLookingForDriver(
+        userId: userId,
+        lookingForDriver: lookingForDriver,
+        pickUpPlace: pickUpPlace,
+        destination: destination);
   }
-   void updateSettingPickUp({required String userId, required bool settingPickUp}) async {
-   
-  
+
+  void updateSettingPickUp(
+      {required String userId, required bool settingPickUp}) async {
     ref
         .read(authDataSourceProvider)
-        .updateSettingPickUp( userId: userId, settingPickUp: settingPickUp);
+        .updateSettingPickUp(userId: userId, settingPickUp: settingPickUp);
   }
-   void resetValues({required String userId,}) async {
-   
-  
-    ref
-        .read(authDataSourceProvider)
-        .resetValues( userId: userId, );
+
+  void resetValues({
+    required String userId,
+  }) async {
+    ref.read(authDataSourceProvider).resetValues(
+          userId: userId,
+        );
   }
 
   void updateDestination(

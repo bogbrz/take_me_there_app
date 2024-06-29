@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:flutter/material.dart';
-import 'package:map_picker/map_picker.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:map_picker/map_picker.dart';
 
 class LocationPickPage extends StatefulWidget {
   const LocationPickPage({Key? key}) : super(key: key);

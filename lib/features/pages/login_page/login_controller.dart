@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:take_me_there_app/app/core/enums.dart';
 import 'package:take_me_there_app/features/pages/login_page/login_state.dart';

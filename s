@@ -2,19 +2,24 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:map_picker/map_picker.dart';
+import 'package:take_me_there_app/app/app_routes.dart';
 import 'package:take_me_there_app/app/core/enums.dart';
+import 'package:take_me_there_app/domain/models/user_model.dart';
 import 'package:take_me_there_app/features/pages/home_page/driver_panel.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_controller.dart';
 import 'package:take_me_there_app/features/pages/home_page/search_bar_widget.dart';
 import 'package:take_me_there_app/map_config/google_maps_dependecy.dart';
+import 'package:map_picker/map_picker.dart';
+import 'package:take_me_there_app/providers/auth_provider.dart';
 
 class HomePage extends HookConsumerWidget {
   HomePage({super.key});
@@ -251,21 +256,15 @@ class HomePage extends HookConsumerWidget {
         ),
         Align(
             alignment: FractionalOffset.bottomCenter,
-            child:
-
-                 user.userType == UserType.client.toString()
-                    ?
-
-                SearchBarWidget(
+            child: user.userType == UserType.client.toString()
+                ? SearchBarWidget(
                     GeoPoint(_pickUpPlaceCoords.value?.latitude ?? 0,
                         _pickUpPlaceCoords.value?.longitude ?? 0),
                     _pickUpPlaceMark.value,
                     user.distance,
                     user.id,
                     user)
-            : DriverPanel()
-
-            )
+                : DriverPanel())
       ]),
     );
   }

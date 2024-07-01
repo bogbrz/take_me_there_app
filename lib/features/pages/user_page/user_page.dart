@@ -22,19 +22,21 @@ class UserPage extends HookConsumerWidget {
     print(FirebaseAuth.instance.currentUser);
 
     return Scaffold(
-        body: ListView(
-      children: [
-        for (final userStream in streamUser.value!) ...[
-          Text(
-              '''${userStream.username}\n ${userStream.email} \n ${userStream.phoneNumber}''')
-        ],
-        CircleAvatar(),
-        IconButton(
-            onPressed: () {
-              ref.read(loginControllerProvider.notifier).signOut();
-            },
-            icon: Icon(Icons.logout))
-      ],
-    ));
+        body: streamUser.value == null
+            ? Center(child: CircularProgressIndicator())
+            : ListView(
+                children: [
+                  for (final userStream in streamUser.value!) ...[
+                    Text(
+                        '''${userStream.username}\n ${userStream.email} \n ${userStream.phoneNumber}''')
+                  ],
+                  CircleAvatar(),
+                  IconButton(
+                      onPressed: () {
+                        ref.read(loginControllerProvider.notifier).signOut();
+                      },
+                      icon: Icon(Icons.logout))
+                ],
+              ));
   }
 }

@@ -12,6 +12,12 @@ class UserModel with _$UserModel {
     required String id,
     required String phoneNumber,
     required String userType,
-    required GeoPoint? geoPoint,
+    required GeoPoint? localization,
+    required GeoPoint? destination,
+    required double distance,
+    @Default(false) bool findRoute,
+    @Default(false) bool optionChosen,
+    @Default(false) bool lookingForDriver,
+    @Default(false) bool settingPickUp,
   }) = _UserModel;
 }

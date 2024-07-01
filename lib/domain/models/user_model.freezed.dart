@@ -21,7 +21,13 @@ mixin _$UserModel {
   String get id => throw _privateConstructorUsedError;
   String get phoneNumber => throw _privateConstructorUsedError;
   String get userType => throw _privateConstructorUsedError;
-  GeoPoint? get geoPoint => throw _privateConstructorUsedError;
+  GeoPoint? get localization => throw _privateConstructorUsedError;
+  GeoPoint? get destination => throw _privateConstructorUsedError;
+  double get distance => throw _privateConstructorUsedError;
+  bool get findRoute => throw _privateConstructorUsedError;
+  bool get optionChosen => throw _privateConstructorUsedError;
+  bool get lookingForDriver => throw _privateConstructorUsedError;
+  bool get settingPickUp => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $UserModelCopyWith<UserModel> get copyWith =>
@@ -39,7 +45,13 @@ abstract class $UserModelCopyWith<$Res> {
       String id,
       String phoneNumber,
       String userType,
-      GeoPoint? geoPoint});
+      GeoPoint? localization,
+      GeoPoint? destination,
+      double distance,
+      bool findRoute,
+      bool optionChosen,
+      bool lookingForDriver,
+      bool settingPickUp});
 }
 
 /// @nodoc
@@ -60,7 +72,13 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
     Object? id = null,
     Object? phoneNumber = null,
     Object? userType = null,
-    Object? geoPoint = freezed,
+    Object? localization = freezed,
+    Object? destination = freezed,
+    Object? distance = null,
+    Object? findRoute = null,
+    Object? optionChosen = null,
+    Object? lookingForDriver = null,
+    Object? settingPickUp = null,
   }) {
     return _then(_value.copyWith(
       email: null == email
@@ -83,10 +101,34 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
           ? _value.userType
           : userType // ignore: cast_nullable_to_non_nullable
               as String,
-      geoPoint: freezed == geoPoint
-          ? _value.geoPoint
-          : geoPoint // ignore: cast_nullable_to_non_nullable
+      localization: freezed == localization
+          ? _value.localization
+          : localization // ignore: cast_nullable_to_non_nullable
               as GeoPoint?,
+      destination: freezed == destination
+          ? _value.destination
+          : destination // ignore: cast_nullable_to_non_nullable
+              as GeoPoint?,
+      distance: null == distance
+          ? _value.distance
+          : distance // ignore: cast_nullable_to_non_nullable
+              as double,
+      findRoute: null == findRoute
+          ? _value.findRoute
+          : findRoute // ignore: cast_nullable_to_non_nullable
+              as bool,
+      optionChosen: null == optionChosen
+          ? _value.optionChosen
+          : optionChosen // ignore: cast_nullable_to_non_nullable
+              as bool,
+      lookingForDriver: null == lookingForDriver
+          ? _value.lookingForDriver
+          : lookingForDriver // ignore: cast_nullable_to_non_nullable
+              as bool,
+      settingPickUp: null == settingPickUp
+          ? _value.settingPickUp
+          : settingPickUp // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -105,7 +147,13 @@ abstract class _$$UserModelImplCopyWith<$Res>
       String id,
       String phoneNumber,
       String userType,
-      GeoPoint? geoPoint});
+      GeoPoint? localization,
+      GeoPoint? destination,
+      double distance,
+      bool findRoute,
+      bool optionChosen,
+      bool lookingForDriver,
+      bool settingPickUp});
 }
 
 /// @nodoc
@@ -124,7 +172,13 @@ class __$$UserModelImplCopyWithImpl<$Res>
     Object? id = null,
     Object? phoneNumber = null,
     Object? userType = null,
-    Object? geoPoint = freezed,
+    Object? localization = freezed,
+    Object? destination = freezed,
+    Object? distance = null,
+    Object? findRoute = null,
+    Object? optionChosen = null,
+    Object? lookingForDriver = null,
+    Object? settingPickUp = null,
   }) {
     return _then(_$UserModelImpl(
       email: null == email
@@ -147,10 +201,34 @@ class __$$UserModelImplCopyWithImpl<$Res>
           ? _value.userType
           : userType // ignore: cast_nullable_to_non_nullable
               as String,
-      geoPoint: freezed == geoPoint
-          ? _value.geoPoint
-          : geoPoint // ignore: cast_nullable_to_non_nullable
+      localization: freezed == localization
+          ? _value.localization
+          : localization // ignore: cast_nullable_to_non_nullable
               as GeoPoint?,
+      destination: freezed == destination
+          ? _value.destination
+          : destination // ignore: cast_nullable_to_non_nullable
+              as GeoPoint?,
+      distance: null == distance
+          ? _value.distance
+          : distance // ignore: cast_nullable_to_non_nullable
+              as double,
+      findRoute: null == findRoute
+          ? _value.findRoute
+          : findRoute // ignore: cast_nullable_to_non_nullable
+              as bool,
+      optionChosen: null == optionChosen
+          ? _value.optionChosen
+          : optionChosen // ignore: cast_nullable_to_non_nullable
+              as bool,
+      lookingForDriver: null == lookingForDriver
+          ? _value.lookingForDriver
+          : lookingForDriver // ignore: cast_nullable_to_non_nullable
+              as bool,
+      settingPickUp: null == settingPickUp
+          ? _value.settingPickUp
+          : settingPickUp // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -164,7 +242,13 @@ class _$UserModelImpl implements _UserModel {
       required this.id,
       required this.phoneNumber,
       required this.userType,
-      required this.geoPoint});
+      required this.localization,
+      required this.destination,
+      required this.distance,
+      this.findRoute = false,
+      this.optionChosen = false,
+      this.lookingForDriver = false,
+      this.settingPickUp = false});
 
   @override
   final String email;
@@ -177,11 +261,27 @@ class _$UserModelImpl implements _UserModel {
   @override
   final String userType;
   @override
-  final GeoPoint? geoPoint;
+  final GeoPoint? localization;
+  @override
+  final GeoPoint? destination;
+  @override
+  final double distance;
+  @override
+  @JsonKey()
+  final bool findRoute;
+  @override
+  @JsonKey()
+  final bool optionChosen;
+  @override
+  @JsonKey()
+  final bool lookingForDriver;
+  @override
+  @JsonKey()
+  final bool settingPickUp;
 
   @override
   String toString() {
-    return 'UserModel(email: $email, username: $username, id: $id, phoneNumber: $phoneNumber, userType: $userType, geoPoint: $geoPoint)';
+    return 'UserModel(email: $email, username: $username, id: $id, phoneNumber: $phoneNumber, userType: $userType, localization: $localization, destination: $destination, distance: $distance, findRoute: $findRoute, optionChosen: $optionChosen, lookingForDriver: $lookingForDriver, settingPickUp: $settingPickUp)';
   }
 
   @override
@@ -197,13 +297,37 @@ class _$UserModelImpl implements _UserModel {
                 other.phoneNumber == phoneNumber) &&
             (identical(other.userType, userType) ||
                 other.userType == userType) &&
-            (identical(other.geoPoint, geoPoint) ||
-                other.geoPoint == geoPoint));
+            (identical(other.localization, localization) ||
+                other.localization == localization) &&
+            (identical(other.destination, destination) ||
+                other.destination == destination) &&
+            (identical(other.distance, distance) ||
+                other.distance == distance) &&
+            (identical(other.findRoute, findRoute) ||
+                other.findRoute == findRoute) &&
+            (identical(other.optionChosen, optionChosen) ||
+                other.optionChosen == optionChosen) &&
+            (identical(other.lookingForDriver, lookingForDriver) ||
+                other.lookingForDriver == lookingForDriver) &&
+            (identical(other.settingPickUp, settingPickUp) ||
+                other.settingPickUp == settingPickUp));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, email, username, id, phoneNumber, userType, geoPoint);
+      runtimeType,
+      email,
+      username,
+      id,
+      phoneNumber,
+      userType,
+      localization,
+      destination,
+      distance,
+      findRoute,
+      optionChosen,
+      lookingForDriver,
+      settingPickUp);
 
   @JsonKey(ignore: true)
   @override
@@ -219,7 +343,13 @@ abstract class _UserModel implements UserModel {
       required final String id,
       required final String phoneNumber,
       required final String userType,
-      required final GeoPoint? geoPoint}) = _$UserModelImpl;
+      required final GeoPoint? localization,
+      required final GeoPoint? destination,
+      required final double distance,
+      final bool findRoute,
+      final bool optionChosen,
+      final bool lookingForDriver,
+      final bool settingPickUp}) = _$UserModelImpl;
 
   @override
   String get email;
@@ -232,7 +362,19 @@ abstract class _UserModel implements UserModel {
   @override
   String get userType;
   @override
-  GeoPoint? get geoPoint;
+  GeoPoint? get localization;
+  @override
+  GeoPoint? get destination;
+  @override
+  double get distance;
+  @override
+  bool get findRoute;
+  @override
+  bool get optionChosen;
+  @override
+  bool get lookingForDriver;
+  @override
+  bool get settingPickUp;
   @override
   @JsonKey(ignore: true)
   _$$UserModelImplCopyWith<_$UserModelImpl> get copyWith =>

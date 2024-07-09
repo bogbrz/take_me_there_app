@@ -149,6 +149,12 @@ class SuggestionController extends StateNotifier<HomeState> {
         .updateSettingPickUp(userId: userId, settingPickUp: settingPickUp);
   }
 
+  void acceptRide({required String driverId, required String rideId, required GeoPoint driverLocation}) {
+    ref
+        .read(authDataSourceProvider)
+        .acceptRide(driverId: driverId, rideId: rideId, driverLocation: driverLocation);
+  }
+
   void resetValues({
     required String userId,
   }) async {

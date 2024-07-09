@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -20,7 +22,10 @@ class DriverPanel extends HookConsumerWidget {
 
     final rides = ref.watch(ridesStreamProvider).value ?? [];
 
+    final clients = ref.watch(clientUsersStreamProvider).value ?? [];
+
     final shortestDistance = useState<double?>(null);
+    final acceptedRide = useState<bool>(false);
 
     final listOfDistances = useState<List<DistanceModel>>([]);
 
@@ -97,25 +102,58 @@ class DriverPanel extends HookConsumerWidget {
         decoration: BoxDecoration(
             color: Color.fromARGB(173, 0, 0, 0),
             borderRadius: BorderRadius.circular(10)),
-        height: MediaQuery.of(context).size.height * 0.33,  
-        // width: MediaQuery.of(context).size.height * 0.8,
-        child: Column(
-          children: [
-            Text("Driver Panel"),
-            Expanded(
-              child: ListView.builder(
-                  itemCount: closestRide.length,
-                  itemBuilder: ((context, index) {
-                    final ride = closestRide[index];
-                    return Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [Text(ride.passagerId), Text(ride.driverId!)],
-                      ),
-                    );
-                  })),
-            )
-          ],
-        ));
+        height: acceptedRide.value
+            ? MediaQuery.of(context).size.height * 0.1
+            : MediaQuery.of(context).size.height * 0.33,
+        width: MediaQuery.of(context).size.height * 0.8,
+        child: acceptedRide.value == false
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text("Driver Panel"),
+                  Expanded(
+                    child: ListView.builder(
+                        itemCount: closestRide.length,
+                        itemBuilder: ((context, index) {
+                          final ride = closestRide[index];
+                          return Column(
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CircleAvatar(),
+                                  Text(
+                                      "${clients.where((element) => element.id == ride.passagerId).toList()[0].username}")
+                                ],
+                              ),
+                              Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          ref
+                                              .read(suggestionControllerProvider
+                                                  .notifier)
+                                              .acceptRide(
+                                                  driverId: user.id,
+                                                  rideId: ride.rideId,
+                                                  driverLocation:
+                                                      user.localization ??
+                                                          GeoPoint(0, 0));
+                                          acceptedRide.value = true;
+                                        },
+                                        child: Text("Accept")),
+                                    ElevatedButton(
+                                        onPressed: () {},
+                                        child: Text("Decline"))
+                                  ])
+                            ],
+                          );
+                        })),
+                  )
+                ],
+              )
+            : Text("DRIVING"));
   }
 }

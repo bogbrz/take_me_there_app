@@ -210,6 +210,16 @@ class AuthDataSource {
             .toList());
   }
 
+  Future<void> acceptRide(
+      {required String driverId,
+      required String rideId,
+      required GeoPoint driverLocation}) async {
+    return FirebaseFirestore.instance
+        .collection("rides")
+        .doc(rideId)
+        .update({"driverId": driverId, "driverLocation": driverLocation});
+  }
+
   void signOut() {
     auth.signOut();
   }

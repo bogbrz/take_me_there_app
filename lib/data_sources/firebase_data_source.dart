@@ -123,7 +123,8 @@ class AuthDataSource {
       "pickUpLocation": pickUpPlace,
       "destination": destination,
       "driverId": "",
-      "driverLocation": null
+      "driverLocation": null,
+      "acceptedRide": false,
     });
   }
 
@@ -201,6 +202,7 @@ class AuthDataSource {
     return FirebaseFirestore.instance.collection("rides").snapshots().map(
         (snapshot) => snapshot.docs
             .map((doc) => RideModel(
+                acceptedRide: doc["acceptedRide"],
                 destination: doc["destination"],
                 pickUpLocation: doc["pickUpLocation"],
                 passagerId: doc["passagerId"],
@@ -213,11 +215,13 @@ class AuthDataSource {
   Future<void> acceptRide(
       {required String driverId,
       required String rideId,
-      required GeoPoint driverLocation}) async {
-    return FirebaseFirestore.instance
-        .collection("rides")
-        .doc(rideId)
-        .update({"driverId": driverId, "driverLocation": driverLocation});
+      required GeoPoint driverLocation,
+      acceptedRide}) async {
+    return FirebaseFirestore.instance.collection("rides").doc(rideId).update({
+      "driverId": driverId,
+      "driverLocation": driverLocation,
+      "acceptedRide": acceptedRide
+    });
   }
 
   void signOut() {

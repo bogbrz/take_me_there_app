@@ -241,7 +241,7 @@ class HomePage extends HookConsumerWidget {
 
                 for (final marker in user.userType == UserType.client.toString()
                     ? driversMarkers
-                    : clientsMarkers) ...[marker]
+                    : []) ...[marker]
               },
               polylines: user.lookingForDriver == false
                   ? Set()
@@ -251,21 +251,15 @@ class HomePage extends HookConsumerWidget {
         ),
         Align(
             alignment: FractionalOffset.bottomCenter,
-            child:
-
-                 user.userType == UserType.client.toString()
-                    ?
-
-                SearchBarWidget(
+            child: user.userType == UserType.client.toString()
+                ? SearchBarWidget(
                     GeoPoint(_pickUpPlaceCoords.value?.latitude ?? 0,
                         _pickUpPlaceCoords.value?.longitude ?? 0),
                     _pickUpPlaceMark.value,
                     user.distance,
                     user.id,
                     user)
-            : DriverPanel()
-
-            )
+                : DriverPanel())
       ]),
     );
   }

@@ -9,18 +9,27 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:take_me_there_app/domain/models/distance_calculate_model.dart';
 import 'package:take_me_there_app/domain/models/distance_model.dart';
+import 'package:take_me_there_app/domain/models/ride_model.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_controller.dart';
 
 class DriverPanel extends HookConsumerWidget {
   DriverPanel({
     super.key,
   });
-
+    /// TO FIX DISPLAYING AVALIBLE RIDES LOGIC !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final listOfDecilendStrings = useState<List<String>>([]);
     final user = ref.watch(userStreamProvider).value![0];
 
-    final rides = ref.watch(ridesStreamProvider).value ?? [];
+    final rides = ref
+            .watch(ridesStreamProvider)
+            .value
+            ?.where((element) =>
+                element.acceptedRide == false &&
+                !listOfDecilendStrings.value.contains(element.rideId))
+            .toList() ??
+        [];
 
     final clients = ref.watch(clientUsersStreamProvider).value ?? [];
 
@@ -30,11 +39,13 @@ class DriverPanel extends HookConsumerWidget {
     final listOfDistances = useState<List<DistanceModel>>([]);
 
     final closestDistanceModel = useState<List<DistanceModel>?>(null);
+    final rideIndex = useState<int>(0);
+    final displayRides = useState<List<RideModel>>([]);
 
-    final closestRide = rides
-        .where((element) =>
-            element.rideId == closestDistanceModel.value?[0].rideId)
-        .toList();
+    // final closestRide = rides
+    //     .where((element) =>
+    //         element.rideId == closestDistanceModel.value?[0].rideId)
+    //     .toList();
 
     final List<CalculateModel> calculateModels = rides
         .map((e) => CalculateModel(
@@ -66,18 +77,23 @@ class DriverPanel extends HookConsumerWidget {
             distance: calculateDistance(
                 pickUp: pickUp.coordinates, userLocation: userLocation)));
       }
-    }
 
-    void getShortestDistance({required List<DistanceModel> distanceModels}) {
       List<double> distances = [];
-      for (final distanceModel in distanceModels) {
+      for (final distanceModel in listOfDistances.value) {
         distances.add(distanceModel.distance);
       }
-      shortestDistance.value = distances.reduce(min);
-      closestDistanceModel.value = distanceModels
+      shortestDistance.value = distances[rideIndex.value];
+      closestDistanceModel.value = listOfDistances.value
           .where((element) => element.distance == shortestDistance.value)
           .toList();
+
+      displayRides.value = rides
+          .where((element) =>
+              element.rideId == closestDistanceModel.value?[0].rideId)
+          .toList();
     }
+
+    void getShortestDistance({required List<DistanceModel> distanceModels}) {}
 
     void calculations() {
       getDistances(
@@ -85,14 +101,20 @@ class DriverPanel extends HookConsumerWidget {
           userLocation: LatLng(
               user.localization!.latitude, user.localization!.longitude));
 
-      getShortestDistance(distanceModels: listOfDistances.value);
+      // getShortestDistance(distanceModels: listOfDistances.value);
     }
 
     useEffect(() {
-      calculations();
-    });
+      if (rides.isNotEmpty) {
+        calculations();
+      } else {
+        null;
+      }
 
-    print("RIDES  $rides");
+      // print(closestDistanceModel.value!);
+      // print(closestDistanceModel.value!.length);
+      return;
+    });
 
     return Container(
         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.05),
@@ -113,43 +135,55 @@ class DriverPanel extends HookConsumerWidget {
                   Text("Driver Panel"),
                   Expanded(
                     child: ListView.builder(
-                        itemCount: closestRide.length,
+                        itemCount: 1,
                         itemBuilder: ((context, index) {
-                          final ride = closestRide[index];
-                          return Column(
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CircleAvatar(),
-                                  Text(
-                                      "${clients.where((element) => element.id == ride.passagerId).toList()[0].username}")
-                                ],
-                              ),
-                              Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
+                          if (rides.isNotEmpty) {
+                            final ride = displayRides.value[index];
+
+                            return Column(
+                              children: [
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    ElevatedButton(
-                                        onPressed: () {
-                                          ref
-                                              .read(suggestionControllerProvider
-                                                  .notifier)
-                                              .acceptRide(
-                                                  driverId: user.id,
-                                                  rideId: ride.rideId,
-                                                  driverLocation:
-                                                      user.localization ??
-                                                          GeoPoint(0, 0));
-                                          acceptedRide.value = true;
-                                        },
-                                        child: Text("Accept")),
-                                    ElevatedButton(
-                                        onPressed: () {},
-                                        child: Text("Decline"))
-                                  ])
-                            ],
-                          );
+                                    CircleAvatar(),
+                                    Text(
+                                        "${clients.where((element) => element.id == ride.passagerId).toList()[0].username}")
+                                  ],
+                                ),
+                                Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            acceptedRide.value = true;
+                                            ref
+                                                .read(
+                                                    suggestionControllerProvider
+                                                        .notifier)
+                                                .acceptRide(
+                                                    acceptedRide:
+                                                        acceptedRide.value,
+                                                    driverId: user.id,
+                                                    rideId: ride.rideId,
+                                                    driverLocation:
+                                                        user.localization ??
+                                                            GeoPoint(0, 0));
+                                          },
+                                          child: Text("Accept")),
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            listOfDecilendStrings.value
+                                                .add(ride.rideId);
+                                            rideIndex.value++;
+                                          },
+                                          child: Text("Decline"))
+                                    ])
+                              ],
+                            );
+                          } else {
+                            return Center(child: Text("No rides avalible"));
+                          }
                         })),
                   )
                 ],

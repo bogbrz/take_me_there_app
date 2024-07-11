@@ -237,6 +237,15 @@ class AuthDataSource {
         .update({"driverPickConfirm": true});
   }
 
+  Future<void> passengerConfirm({
+    required String rideId,
+  }) async {
+    return FirebaseFirestore.instance
+        .collection("rides")
+        .doc(rideId)
+        .update({"passengerConfirm": true});
+  }
+
   void signOut() {
     auth.signOut();
   }

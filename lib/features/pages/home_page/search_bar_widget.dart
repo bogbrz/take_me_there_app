@@ -27,6 +27,9 @@ class SearchBarWidget extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final places = ref.watch(suggestionControllerProvider.notifier);
+    final rides = ref.watch(ridesStreamProvider).value;
+    final currentRide =
+        rides?.where((element) => element.passagerId == userId).toList()[0];
     final pickUpLocationController = useTextEditingController();
     final destinationController = useTextEditingController();
     final widgetContetController = useState(0);
@@ -131,7 +134,49 @@ class SearchBarWidget extends HookConsumerWidget {
                         icon: Icon(Icons.arrow_back)),
                   )
                 : SizedBox.shrink(),
-            if (widgetContetController.value == 0) ...[
+            if (currentRide != null &&
+                currentRide.driverPickConfirm &&
+                currentRide.passengerConfrim == false) ...[
+              Column(
+                children: [
+                  Text("Your driver is at location"),
+                  ElevatedButton(
+                      onPressed: () {
+                        ref
+                            .read(suggestionControllerProvider.notifier)
+                            .passengerConfirm(rideId: currentRide.rideId);
+                      },
+                      child: Text("Confirm that you are in a car")),
+                ],
+              )
+            ] else if (currentRide != null &&
+                currentRide.driverPickConfirm &&
+                currentRide.passengerConfrim) ...[
+              Column(
+                children: [
+                  Text("Taking you there"),
+                  Text("Driver info"),
+                  Wrap(
+                    children: [
+                      Column(
+                        children: [CircleAvatar(), Text("Name Surname")],
+                      ),
+                      Column(
+                        children: [
+                          Row(
+                            children: [
+                              Text("Rating 5"),
+                              Icon(Icons.star_sharp)
+                            ],
+                          ),
+                          Text("Finished rides")
+                        ],
+                      ),
+                    ],
+                  )
+                ],
+              )
+            ] else if (widgetContetController.value == 0) ...[
               Column(
                 children: [
                   Container(

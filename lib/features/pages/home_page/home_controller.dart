@@ -181,6 +181,11 @@ class SuggestionController extends StateNotifier<HomeState> {
         .read(authDataSourceProvider)
         .driverConfirm( rideId: rideId,);
   }
+   void passengerConfirm({required String rideId, }) {
+    ref
+        .read(authDataSourceProvider)
+        .passengerConfirm( rideId: rideId,);
+  }
 
   void resetValues({
     required String userId,

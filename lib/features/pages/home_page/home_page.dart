@@ -11,6 +11,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:map_picker/map_picker.dart';
 import 'package:take_me_there_app/app/core/enums.dart';
+import 'package:take_me_there_app/domain/models/ride_model.dart';
 import 'package:take_me_there_app/features/pages/home_page/driver_panel.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_controller.dart';
 import 'package:take_me_there_app/features/pages/home_page/search_bar_widget.dart';
@@ -63,11 +64,16 @@ class HomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(userStreamProvider).value![0];
-
     final drivers = ref.watch(driverUsersStreamProvider).value ?? [];
-
+    final acceptedRides = ref
+            .watch(ridesStreamProvider)
+            .value
+            ?.where((element) => element.acceptedRide == true)
+            .toList() ??
+        [];
+    final ride =
+        acceptedRides.where((element) => element.driverId == user.id).toList();
     final clients = ref.watch(clientUsersStreamProvider).value ?? [];
-
     final List<Marker> driversMarkers = drivers
         .map((e) => Marker(
             markerId: MarkerId("${e.id}"),
@@ -75,7 +81,6 @@ class HomePage extends HookConsumerWidget {
             position: LatLng(
                 e.localization?.latitude ?? 0, e.localization?.longitude ?? 0)))
         .toList();
-
     final List<Marker> clientsMarkers = clients
         .map((e) => Marker(
             markerId: MarkerId("${e.id}"),
@@ -83,11 +88,9 @@ class HomePage extends HookConsumerWidget {
             position: LatLng(
                 e.localization?.latitude ?? 0, e.localization?.longitude ?? 0)))
         .toList();
-
     final _pickUpAreaVisible = useState<bool>(false);
     final _pickUpPlaceMark = useState<Placemark?>(null);
     final _pickUpPlaceCoords = useState<GeoPoint?>(null);
-    final _customIcon = useState<BitmapDescriptor?>(null);
 
     CameraPosition cameraPositionP = CameraPosition(
       target: LatLng(
@@ -96,7 +99,21 @@ class HomePage extends HookConsumerWidget {
     );
 
     final polylinesStateT = useState<Map<PolylineId, Polyline>>({});
-    final routePoints = useState<List<LatLng>>([]);
+
+    Future<List<LatLng>> fetchPointsForDriversRoute(
+        {required RideModel ride}) async {
+      final driversRoutePoints = await ref
+          .watch(suggestionControllerProvider.notifier)
+          .getDriverRoute(
+            start: LatLng(
+                ride.driverLocation!.latitude, ride.driverLocation!.longitude),
+            end: LatLng(
+                ride.pickUpLocation.latitude, ride.pickUpLocation.longitude),
+          );
+
+      return driversRoutePoints;
+    }
+
     Future<List<LatLng>> fetchPolylinePoints() async {
       print("GENERATE");
       final points = await ref
@@ -110,7 +127,7 @@ class HomePage extends HookConsumerWidget {
               end: LatLng(
                   user.destination!.latitude, user.destination!.longitude));
       print("PAGE CAL : $points");
-      routePoints.value.addAll(points);
+
       return points;
     }
 
@@ -123,14 +140,36 @@ class HomePage extends HookConsumerWidget {
       polylinesStateT.value = {PolylineId("1"): polyline};
     }
 
+    Future<void> initializeDriverRoute({required RideModel ride}) async {
+      print("DRIVER FUNCTION");
+      await fetchPointsForDriversRoute(ride: ride)
+          .then((value) => generatePolylineFromPoints(points: value));
+    }
+
     Future<void> initilazeMap() async {
       await fetchPolylinePoints()
           .then((value) => generatePolylineFromPoints(points: value));
     }
 
+    ref.listen(ridesStreamProvider, (previous, next) {
+      final previousRide = previous?.value
+          ?.where((element) =>
+              element.acceptedRide == true && element.driverId == user.id)
+          .toList()[0];
+      final currentRide = next.value!
+          .where((element) =>
+              element.acceptedRide == true && element.driverId == user.id)
+          .toList()[0];
+
+      if (currentRide.acceptedRide) {
+        initializeDriverRoute(ride: currentRide);
+      }
+    });
+
     ref.listen(userStreamProvider, (previous, next) {
       final previousUser = previous?.value?[0];
       final currentUser = next.value![0];
+
       if (previousUser?.findRoute != currentUser.findRoute &&
           currentUser.findRoute) {
         fetchPolylinePoints();
@@ -243,7 +282,8 @@ class HomePage extends HookConsumerWidget {
                     ? driversMarkers
                     : []) ...[marker]
               },
-              polylines: user.lookingForDriver == false
+              polylines: user.lookingForDriver == false &&
+                      user.userType == UserType.client.toString()
                   ? Set()
                   : Set<Polyline>.of(polylinesStateT.value.values),
             ),

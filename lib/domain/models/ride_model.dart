@@ -12,5 +12,7 @@ class RideModel with _$RideModel {
       required String? driverId,
       required GeoPoint? driverLocation,
       required String rideId,
-      required bool acceptedRide}) = _RideModel;
+      required bool acceptedRide,
+      required bool passengerConfrim,
+      required bool driverPickConfirm}) = _RideModel;
 }

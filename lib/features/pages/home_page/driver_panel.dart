@@ -16,7 +16,8 @@ class DriverPanel extends HookConsumerWidget {
   DriverPanel({
     super.key,
   });
-    /// TO FIX DISPLAYING AVALIBLE RIDES LOGIC !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+  /// TO FIX DISPLAYING AVALIBLE RIDES LOGIC !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final listOfDecilendStrings = useState<List<String>>([]);
@@ -31,6 +32,13 @@ class DriverPanel extends HookConsumerWidget {
             .toList() ??
         [];
 
+    final currentRide = ref
+            .watch(ridesStreamProvider)
+            .value
+            ?.where((element) => element.driverId == user.id)
+            .toList() ??
+        [];
+
     final clients = ref.watch(clientUsersStreamProvider).value ?? [];
 
     final shortestDistance = useState<double?>(null);
@@ -41,6 +49,7 @@ class DriverPanel extends HookConsumerWidget {
     final closestDistanceModel = useState<List<DistanceModel>?>(null);
     final rideIndex = useState<int>(0);
     final displayRides = useState<List<RideModel>>([]);
+    final driverConfirm = useState<bool>(false);
 
     // final closestRide = rides
     //     .where((element) =>
@@ -103,6 +112,21 @@ class DriverPanel extends HookConsumerWidget {
 
       // getShortestDistance(distanceModels: listOfDistances.value);
     }
+
+    // ref.listen(
+    //   ridesStreamProvider,
+    //   (previous, next) {
+    //     final currentRide = next.value
+    //         ?.where((element) =>
+    //             element.acceptedRide == false &&
+    //             !listOfDecilendStrings.value.contains(element.rideId))
+    //         .toList()[0];
+
+    //     if (currentRide != null && currentRide.driverPickConfirm) {
+    //       driverConfirm.value = true;
+    //     }
+    //   },
+    // );
 
     useEffect(() {
       if (rides.isNotEmpty) {
@@ -181,6 +205,74 @@ class DriverPanel extends HookConsumerWidget {
                                     ])
                               ],
                             );
+                          } else if (currentRide.isNotEmpty) {
+                            final ride = currentRide[0];
+
+                            return Column(children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CircleAvatar(),
+                                  Text(
+                                      "${clients.where((element) => element.id == ride.passagerId).toList()[0].username}"),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      if (ride.driverPickConfirm == false) ...[
+                                        ElevatedButton(
+                                            onPressed: () {
+                                              ref
+                                                  .read(
+                                                      suggestionControllerProvider
+                                                          .notifier)
+                                                  .updateLocation(
+                                                      userId: user.id);
+                                              if (calculateDistance(
+                                                      pickUp: LatLng(
+                                                          ride.pickUpLocation
+                                                              .latitude,
+                                                          ride.pickUpLocation
+                                                              .longitude),
+                                                      userLocation: LatLng(
+                                                          user.localization!
+                                                              .latitude,
+                                                          user.localization!
+                                                              .latitude)) <=
+                                                  15000) {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(
+                                                        content:
+                                                            Text("PICK UP")));
+
+                                                ref
+                                                    .read(
+                                                        suggestionControllerProvider
+                                                            .notifier)
+                                                    .driverConfirm(
+                                                        rideId: ride.rideId);
+                                              } else {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(
+                                                        content: Text(
+                                                            "You are too far away")));
+                                              }
+                                            },
+                                            child: Text("Im here")),
+                                        ElevatedButton(
+                                            onPressed: () {},
+                                            child: Text("Cancel Ride"))
+                                      ] else ...[
+                                        Center(
+                                          child: Text(
+                                              "Waiting for passenger to Confirm pickUp"),
+                                        )
+                                      ]
+                                    ],
+                                  )
+                                ],
+                              )
+                            ]);
                           } else {
                             return Center(child: Text("No rides avalible"));
                           }

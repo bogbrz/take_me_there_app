@@ -23,6 +23,8 @@ mixin _$RideModel {
   GeoPoint? get driverLocation => throw _privateConstructorUsedError;
   String get rideId => throw _privateConstructorUsedError;
   bool get acceptedRide => throw _privateConstructorUsedError;
+  bool get passengerConfrim => throw _privateConstructorUsedError;
+  bool get driverPickConfirm => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $RideModelCopyWith<RideModel> get copyWith =>
@@ -41,7 +43,9 @@ abstract class $RideModelCopyWith<$Res> {
       String? driverId,
       GeoPoint? driverLocation,
       String rideId,
-      bool acceptedRide});
+      bool acceptedRide,
+      bool passengerConfrim,
+      bool driverPickConfirm});
 }
 
 /// @nodoc
@@ -64,6 +68,8 @@ class _$RideModelCopyWithImpl<$Res, $Val extends RideModel>
     Object? driverLocation = freezed,
     Object? rideId = null,
     Object? acceptedRide = null,
+    Object? passengerConfrim = null,
+    Object? driverPickConfirm = null,
   }) {
     return _then(_value.copyWith(
       destination: null == destination
@@ -94,6 +100,14 @@ class _$RideModelCopyWithImpl<$Res, $Val extends RideModel>
           ? _value.acceptedRide
           : acceptedRide // ignore: cast_nullable_to_non_nullable
               as bool,
+      passengerConfrim: null == passengerConfrim
+          ? _value.passengerConfrim
+          : passengerConfrim // ignore: cast_nullable_to_non_nullable
+              as bool,
+      driverPickConfirm: null == driverPickConfirm
+          ? _value.driverPickConfirm
+          : driverPickConfirm // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -113,7 +127,9 @@ abstract class _$$RideModelImplCopyWith<$Res>
       String? driverId,
       GeoPoint? driverLocation,
       String rideId,
-      bool acceptedRide});
+      bool acceptedRide,
+      bool passengerConfrim,
+      bool driverPickConfirm});
 }
 
 /// @nodoc
@@ -134,6 +150,8 @@ class __$$RideModelImplCopyWithImpl<$Res>
     Object? driverLocation = freezed,
     Object? rideId = null,
     Object? acceptedRide = null,
+    Object? passengerConfrim = null,
+    Object? driverPickConfirm = null,
   }) {
     return _then(_$RideModelImpl(
       destination: null == destination
@@ -164,6 +182,14 @@ class __$$RideModelImplCopyWithImpl<$Res>
           ? _value.acceptedRide
           : acceptedRide // ignore: cast_nullable_to_non_nullable
               as bool,
+      passengerConfrim: null == passengerConfrim
+          ? _value.passengerConfrim
+          : passengerConfrim // ignore: cast_nullable_to_non_nullable
+              as bool,
+      driverPickConfirm: null == driverPickConfirm
+          ? _value.driverPickConfirm
+          : driverPickConfirm // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -178,7 +204,9 @@ class _$RideModelImpl implements _RideModel {
       required this.driverId,
       required this.driverLocation,
       required this.rideId,
-      required this.acceptedRide});
+      required this.acceptedRide,
+      required this.passengerConfrim,
+      required this.driverPickConfirm});
 
   @override
   final GeoPoint destination;
@@ -194,10 +222,14 @@ class _$RideModelImpl implements _RideModel {
   final String rideId;
   @override
   final bool acceptedRide;
+  @override
+  final bool passengerConfrim;
+  @override
+  final bool driverPickConfirm;
 
   @override
   String toString() {
-    return 'RideModel(destination: $destination, pickUpLocation: $pickUpLocation, passagerId: $passagerId, driverId: $driverId, driverLocation: $driverLocation, rideId: $rideId, acceptedRide: $acceptedRide)';
+    return 'RideModel(destination: $destination, pickUpLocation: $pickUpLocation, passagerId: $passagerId, driverId: $driverId, driverLocation: $driverLocation, rideId: $rideId, acceptedRide: $acceptedRide, passengerConfrim: $passengerConfrim, driverPickConfirm: $driverPickConfirm)';
   }
 
   @override
@@ -217,12 +249,25 @@ class _$RideModelImpl implements _RideModel {
                 other.driverLocation == driverLocation) &&
             (identical(other.rideId, rideId) || other.rideId == rideId) &&
             (identical(other.acceptedRide, acceptedRide) ||
-                other.acceptedRide == acceptedRide));
+                other.acceptedRide == acceptedRide) &&
+            (identical(other.passengerConfrim, passengerConfrim) ||
+                other.passengerConfrim == passengerConfrim) &&
+            (identical(other.driverPickConfirm, driverPickConfirm) ||
+                other.driverPickConfirm == driverPickConfirm));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, destination, pickUpLocation,
-      passagerId, driverId, driverLocation, rideId, acceptedRide);
+  int get hashCode => Object.hash(
+      runtimeType,
+      destination,
+      pickUpLocation,
+      passagerId,
+      driverId,
+      driverLocation,
+      rideId,
+      acceptedRide,
+      passengerConfrim,
+      driverPickConfirm);
 
   @JsonKey(ignore: true)
   @override
@@ -239,7 +284,9 @@ abstract class _RideModel implements RideModel {
       required final String? driverId,
       required final GeoPoint? driverLocation,
       required final String rideId,
-      required final bool acceptedRide}) = _$RideModelImpl;
+      required final bool acceptedRide,
+      required final bool passengerConfrim,
+      required final bool driverPickConfirm}) = _$RideModelImpl;
 
   @override
   GeoPoint get destination;
@@ -255,6 +302,10 @@ abstract class _RideModel implements RideModel {
   String get rideId;
   @override
   bool get acceptedRide;
+  @override
+  bool get passengerConfrim;
+  @override
+  bool get driverPickConfirm;
   @override
   @JsonKey(ignore: true)
   _$$RideModelImplCopyWith<_$RideModelImpl> get copyWith =>

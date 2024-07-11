@@ -125,6 +125,8 @@ class AuthDataSource {
       "driverId": "",
       "driverLocation": null,
       "acceptedRide": false,
+      "passengerConfirm": false,
+      "driverPickConfirm": false
     });
   }
 
@@ -208,7 +210,9 @@ class AuthDataSource {
                 passagerId: doc["passagerId"],
                 driverId: doc["driverId"],
                 driverLocation: doc["driverLocation"],
-                rideId: doc.id))
+                rideId: doc.id,
+                driverPickConfirm: doc["driverPickConfirm"],
+                passengerConfrim: doc["passengerConfirm"]))
             .toList());
   }
 
@@ -222,6 +226,15 @@ class AuthDataSource {
       "driverLocation": driverLocation,
       "acceptedRide": acceptedRide
     });
+  }
+
+  Future<void> driverConfirm({
+    required String rideId,
+  }) async {
+    return FirebaseFirestore.instance
+        .collection("rides")
+        .doc(rideId)
+        .update({"driverPickConfirm": true});
   }
 
   void signOut() {

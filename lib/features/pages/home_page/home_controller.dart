@@ -91,6 +91,27 @@ class SuggestionController extends StateNotifier<HomeState> {
     return welcomeResults;
   }
 
+   Future<List<LatLng>> getDriverRoute(
+      {required LatLng start,
+      required LatLng end,
+    }) async {
+    state = const HomeStateLoading();
+    final results = await ref
+        .read(placesDataSourceProvider)
+        .getRoute(start: start, end: end);
+    final features = results.features;
+    final coordList = features[0].geometry.coordinates;
+
+    final List<LatLng> route = [];
+
+    for (int i = 0; i < coordList.length; i++) {
+      route.add(LatLng(coordList[i][1], coordList[i][0]));
+    }
+
+ 
+    return route;
+  }
+
   Future<List<LatLng>> getRoute(
       {required LatLng start,
       required LatLng end,
@@ -153,6 +174,12 @@ class SuggestionController extends StateNotifier<HomeState> {
     ref
         .read(authDataSourceProvider)
         .acceptRide(driverId: driverId, rideId: rideId, driverLocation: driverLocation, acceptedRide: acceptedRide);
+  }
+
+  void driverConfirm({required String rideId, }) {
+    ref
+        .read(authDataSourceProvider)
+        .driverConfirm( rideId: rideId,);
   }
 
   void resetValues({

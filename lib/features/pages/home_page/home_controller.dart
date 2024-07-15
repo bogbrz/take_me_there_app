@@ -91,10 +91,10 @@ class SuggestionController extends StateNotifier<HomeState> {
     return welcomeResults;
   }
 
-   Future<List<LatLng>> getDriverRoute(
-      {required LatLng start,
-      required LatLng end,
-    }) async {
+  Future<List<LatLng>> getDriverRoute({
+    required LatLng start,
+    required LatLng end,
+  }) async {
     state = const HomeStateLoading();
     final results = await ref
         .read(placesDataSourceProvider)
@@ -108,7 +108,6 @@ class SuggestionController extends StateNotifier<HomeState> {
       route.add(LatLng(coordList[i][1], coordList[i][0]));
     }
 
- 
     return route;
   }
 
@@ -170,21 +169,32 @@ class SuggestionController extends StateNotifier<HomeState> {
         .updateSettingPickUp(userId: userId, settingPickUp: settingPickUp);
   }
 
-  void acceptRide({required String driverId, required String rideId, required GeoPoint driverLocation, required bool acceptedRide}) {
-    ref
-        .read(authDataSourceProvider)
-        .acceptRide(driverId: driverId, rideId: rideId, driverLocation: driverLocation, acceptedRide: acceptedRide);
+  void acceptRide(
+      {required String driverId,
+      required String rideId,
+      required GeoPoint driverLocation,
+      required bool acceptedRide}) {
+    ref.read(authDataSourceProvider).acceptRide(
+        driverId: driverId,
+        rideId: rideId,
+        driverLocation: driverLocation,
+        acceptedRide: acceptedRide);
   }
 
-  void driverConfirm({required String rideId, }) {
-    ref
-        .read(authDataSourceProvider)
-        .driverConfirm( rideId: rideId,);
+  void driverConfirm({
+    required String rideId,
+  }) {
+    ref.read(authDataSourceProvider).driverConfirm(
+          rideId: rideId,
+        );
   }
-   void passengerConfirm({required String rideId, }) {
-    ref
-        .read(authDataSourceProvider)
-        .passengerConfirm( rideId: rideId,);
+
+  void passengerConfirm({
+    required String rideId,
+  }) {
+    ref.read(authDataSourceProvider).passengerConfirm(
+          rideId: rideId,
+        );
   }
 
   void resetValues({
@@ -193,6 +203,14 @@ class SuggestionController extends StateNotifier<HomeState> {
     ref.read(authDataSourceProvider).resetValues(
           userId: userId,
         );
+  }
+
+  bool isWirting(bool? writing) {
+    if (writing ==null || writing) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   void updateDestination(

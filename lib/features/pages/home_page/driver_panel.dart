@@ -262,10 +262,20 @@ class DriverPanel extends HookConsumerWidget {
                                         ElevatedButton(
                                             onPressed: () {},
                                             child: Text("Cancel Ride"))
-                                      ] else ...[
+                                      ] else if (ride.passengerConfrim ==
+                                              false &&
+                                          ride.driverPickConfirm) ...[
                                         Center(
                                           child: Text(
                                               "Waiting for passenger to Confirm pickUp"),
+                                        )
+                                      ] else if (ride.passengerConfrim &
+                                          ride.driverPickConfirm) ...[
+                                        Column(
+                                          children: [
+                                            Text(
+                                                "Driving to the destination: Destination Name"),
+                                          ],
                                         )
                                       ]
                                     ],

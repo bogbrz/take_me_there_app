@@ -27,9 +27,9 @@ class SearchBarWidget extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final places = ref.watch(suggestionControllerProvider.notifier);
-    final rides = ref.watch(ridesStreamProvider).value;
+    final rides = ref.watch(ridesStreamProvider).value ?? [];
     final currentRide =
-        rides?.where((element) => element.passagerId == userId).toList()[0];
+        rides.where((element) => element.passagerId == userId).toList()[0];
     final pickUpLocationController = useTextEditingController();
     final destinationController = useTextEditingController();
     final widgetContetController = useState(0);
@@ -47,15 +47,14 @@ class SearchBarWidget extends HookConsumerWidget {
 
     final _settingPickUp = useState<bool>(false);
 
-    // ref.listen(userStreamProvider, (previous, next) {
-    //   final previousUser = previous?.value?[0];
-    //   final currentUser = next.value![0];
-    //   if (previousUser?.optionChosen == currentUser.optionChosen &&
-    //       currentUser.optionChosen) {
-    //
-    //     _searchBarHeigh.value = MediaQuery.of(context).size.height * 0.27;
-    //   }
-    // });
+    ref.listen(userStreamProvider, (previous, next) {
+      final previousUser = previous?.value?[0];
+      final currentUser = next.value![0];
+      if (previousUser?.optionChosen == currentUser.optionChosen &&
+          currentUser.optionChosen) {
+        _searchBarHeigh.value = MediaQuery.of(context).size.height * 0.27;
+      }
+    });
 
     ref.listen(userStreamProvider, (previous, next) {
       final previousUser = previous?.value?[0];
@@ -134,8 +133,7 @@ class SearchBarWidget extends HookConsumerWidget {
                         icon: Icon(Icons.arrow_back)),
                   )
                 : SizedBox.shrink(),
-            if (currentRide != null &&
-                currentRide.driverPickConfirm &&
+            if (currentRide.driverPickConfirm &&
                 currentRide.passengerConfrim == false) ...[
               Column(
                 children: [
@@ -149,8 +147,7 @@ class SearchBarWidget extends HookConsumerWidget {
                       child: Text("Confirm that you are in a car")),
                 ],
               )
-            ] else if (currentRide != null &&
-                currentRide.driverPickConfirm &&
+            ] else if (currentRide.driverPickConfirm &&
                 currentRide.passengerConfrim) ...[
               Column(
                 children: [

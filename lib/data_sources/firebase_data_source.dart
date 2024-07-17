@@ -4,11 +4,13 @@ import 'package:injectable/injectable.dart';
 import 'package:take_me_there_app/app/core/enums.dart';
 import 'package:take_me_there_app/domain/models/ride_model.dart';
 import 'package:take_me_there_app/domain/models/user_model.dart';
+import 'package:take_me_there_app/domain/models/way_point_model.dart';
 
 @injectable
 class AuthDataSource {
   final auth = FirebaseAuth.instance;
   final dataBase = FirebaseFirestore.instance;
+  final currentUser = FirebaseAuth.instance.currentUser;
 
   Stream<User?> authStateChanges() {
     return auth.authStateChanges();
@@ -24,7 +26,9 @@ class AuthDataSource {
     try {
       final result = await auth
           .createUserWithEmailAndPassword(email: email, password: password)
-          .then((_) async {
+          .then((_) {
+        createWayPoint();
+      }).then((_) async {
         await auth.currentUser!.updateDisplayName(username);
       }).then((_) async {
         await dataBase.collection("users").add({
@@ -47,6 +51,52 @@ class AuthDataSource {
     } catch (e) {
       throw Exception("Error");
     }
+  }
+
+  Future<void> createWayPoint() async {
+    for (int i = 1; i < 5; i += 3) {
+      await dataBase
+          .collection("newUsers")
+          .doc(currentUser!.uid)
+          .collection("wayPoints")
+          .add({"index": i, "start": "nowhere", "destination": "shitwhere"});
+    }
+  }
+
+  Future<void> addWayPoint({required int index}) async {
+    await dataBase
+        .collection("newUsers")
+        .doc(currentUser!.uid)
+        .collection("wayPoints")
+        .add({"index": index, "start": "nowhere", "destination": "shitwhere"});
+  }
+
+  Future<void> deleteWayPoint({required String wayPointId}) async {
+    await dataBase
+        .collection("newUsers")
+        .doc(currentUser!.uid)
+        .collection("wayPoints")
+        .doc(wayPointId)
+        .delete();
+  }
+
+  Stream<List<WayPointModel>> getWayPoints() {
+    return dataBase
+        .collection("newUsers")
+        .doc(currentUser!.uid)
+        .collection("wayPoints")
+        .orderBy("index")
+        .snapshots()
+        .map((event) {
+      print(event);
+      return event.docs
+          .map((e) => WayPointModel(
+              start: e["start"],
+              destination: e["destination"],
+              index: e["index"],
+              id: e.id))
+          .toList();
+    });
   }
 
   Future<User?> signInWithEmailAndPassword(

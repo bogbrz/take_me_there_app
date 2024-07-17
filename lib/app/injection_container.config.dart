@@ -8,12 +8,10 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:dio/dio.dart' as _i4;
+import 'package:dio/dio.dart' as _i3;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
-import 'package:take_me_there_app/app/injection_container.dart' as _i5;
-import 'package:take_me_there_app/data_sources/firebase_data_source.dart'
-    as _i3;
+import 'package:take_me_there_app/app/injection_container.dart' as _i4;
 
 extension GetItInjectableX on _i1.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -27,15 +25,14 @@ extension GetItInjectableX on _i1.GetIt {
       environmentFilter,
     );
     final registerModule = _$RegisterModule();
-    gh.factory<_i3.AuthDataSource>(() => _i3.AuthDataSource());
     gh.factory<String>(
       () => registerModule.baseUrl,
       instanceName: 'BaseUrl',
     );
-    gh.lazySingleton<_i4.Dio>(
+    gh.lazySingleton<_i3.Dio>(
         () => registerModule.dio(gh<String>(instanceName: 'BaseUrl')));
     return this;
   }
 }
 
-class _$RegisterModule extends _i5.RegisterModule {}
+class _$RegisterModule extends _i4.RegisterModule {}

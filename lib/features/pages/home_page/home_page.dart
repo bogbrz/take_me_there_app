@@ -17,7 +17,6 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:take_me_there_app/app/core/device_size.dart';
 import 'package:take_me_there_app/app/core/enums.dart';
 import 'package:take_me_there_app/domain/models/ride_model.dart';
-import 'package:take_me_there_app/features/pages/home_page/driver_panel.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_controller.dart';
 import 'package:take_me_there_app/features/pages/home_page/search_bar_widget.dart';
 import 'package:take_me_there_app/features/pages/home_page/sliding_panel.dart';

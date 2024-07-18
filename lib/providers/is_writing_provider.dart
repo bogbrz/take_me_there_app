@@ -3,6 +3,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:take_me_there_app/app/core/device_size.dart';
 
+class Providers {}
+
 final isWritingProvider = StateProvider<bool>((ref) => false);
 
 final isTypingProvider = StateProvider<bool>((ref) => false);
@@ -11,10 +13,14 @@ final bottomPanelControllerProvider = StateProvider<PanelController>((ref) {
   return PanelController();
 });
 
+
+
 final topPanelControllerProvider = StateProvider<PanelController>((ref) {
   return PanelController();
 });
-final destinationTextControllerProvider = StateProvider<TextEditingController>((ref) {
+final destinationTextControllerProvider =
+    StateProvider<TextEditingController>((ref) {
   return TextEditingController();
 });
 final lenghtProvider = StateProvider<double>((ref) => 0);
+final panelHeightProvider = StateProvider<double>((ref) => 600);

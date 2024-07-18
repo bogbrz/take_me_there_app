@@ -88,20 +88,21 @@ class TopPanel extends HookConsumerWidget {
                   itemCount: wayPoints.length,
                   itemBuilder: (context, index) {
                     final wayPoint = wayPoints[index];
-                    return Dismissible(
-                        key: ValueKey(wayPoint.id),
-                        onDismissed: (direction) {
-                          heightMultiplayer.value -= 0.0625;
-                          ref
-                              .read(wayPointControllerProvider.notifier)
-                              .removeWayPoint(wayPointId: wayPoint.id);
-                        },
-                        child: TextFieldWidget(
-                          wayPointModel: wayPoint,
-                        ));
-                    // : TextFieldWidget(
-                    //     wayPointModel: wayPoint,
-                    //   );
+                    return wayPoint.index == 2 || wayPoint.index == 3
+                        ? Dismissible(
+                            key: ValueKey(wayPoint.id),
+                            onDismissed: (direction) {
+                              heightMultiplayer.value -= 0.0625;
+                              ref
+                                  .read(wayPointControllerProvider.notifier)
+                                  .removeWayPoint(wayPointId: wayPoint.id);
+                            },
+                            child: TextFieldWidget(
+                              wayPointModel: wayPoint,
+                            ))
+                        : TextFieldWidget(
+                            wayPointModel: wayPoint,
+                          );
                   },
                 ),
               ),
@@ -139,6 +140,7 @@ class TextFieldWidget extends HookConsumerWidget {
     return Expanded(
       child: Container(
         margin: EdgeInsets.all(8),
+        height: MediaQuery.of(context).size.height * 0.05,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(width: 2, color: Colors.white)),
@@ -148,12 +150,12 @@ class TextFieldWidget extends HookConsumerWidget {
             Expanded(
               child: TextField(
                 onChanged: (value) {
-                  // suggestionList(value);
-                  // ref
-                  //         .read(destinationTextControllerProvider.notifier)
-                  //         .state
-                  //         .text ==
-                  //     value;
+                  suggestionList(value);
+                  ref
+                          .read(destinationTextControllerProvider.notifier)
+                          .state
+                          .text ==
+                      value;
                 },
                 onSubmitted: (value) {
                   ref.read(isTypingProvider.notifier).state = false;

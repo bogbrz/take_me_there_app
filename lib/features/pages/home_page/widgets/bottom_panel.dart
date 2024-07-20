@@ -1,19 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:take_me_there_app/domain/models/place_model.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_controller.dart';
+import 'package:take_me_there_app/features/pages/home_page/widgets/panels_controler.dart';
 import 'package:take_me_there_app/providers/is_writing_provider.dart';
 
 class BottomPanel extends HookConsumerWidget {
-  const BottomPanel(
-      {super.key,
-      required this.height,
-      required this.isWriting,
-      required this.width,
-      required this.keyboardSize});
-  final double keyboardSize;
+  const BottomPanel({
+    super.key,
+    required this.height,
+    required this.isWriting,
+    required this.width,
+  });
+
   final double height;
   final bool isWriting;
   final double width;
@@ -28,23 +30,10 @@ class BottomPanel extends HookConsumerWidget {
     final panelHeight = ref.watch(panelHeightProvider.notifier).state;
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     final _suggestions = useState<List<Result>>([]);
-    final lenght = useState<double>(650);
+    final lenght = useState<double>(575);
     final currentHeight = useState<double>(0);
-
+    final wayPoints = ref.watch(wayPointsProvider).value ?? [];
     final places = ref.watch(suggestionControllerProvider.notifier);
-    void suggestionList(String address) async {
-      final listOfResults =
-          await places.getSuggestions(address: textController.text);
-      if (listOfResults == null) {
-        _suggestions.value = [];
-      } else {
-        _suggestions.value = listOfResults
-            .where((result) =>
-                result.address?.streetName != null ||
-                result.address?.country != null)
-            .toList();
-      }
-    }
 
     void startWritingPanels() {
       // ref.read(isWritingProvider.notifier).state = true;
@@ -58,6 +47,19 @@ class BottomPanel extends HookConsumerWidget {
       bottomPanelController.close();
     }
 
+    void suggestionList(String address) async {
+      final listOfResults = await places.getSuggestions(address: address);
+      if (listOfResults == null) {
+        _suggestions.value = [];
+      } else {
+        _suggestions.value = listOfResults
+            .where((result) =>
+                result.address?.streetName != null ||
+                result.address?.country != null)
+            .toList();
+      }
+    }
+
     ref.listen(isWritingProvider, (previous, next) {
       final previousState = previous;
       final currentState = next;
@@ -69,18 +71,31 @@ class BottomPanel extends HookConsumerWidget {
       }
     });
 
+    ref.listen(textValueProvider, (previous, next) {
+      final currentText = next;
+      if (currentText.isNotEmpty) {
+        suggestionList(currentText);
+      }
+    });
+
     ref.listen(isTypingProvider, (previous, next) {
       final previousState = previous;
       final currentState = next;
       if (currentState == false) {
-        lenght.value = height;
+        lenght.value = height - 500;
       } else {
-        lenght.value = height - 650; //WRITING LENGHT
+        lenght.value = height - 500; //WRITING LENGHT
       }
     });
     return SlidingUpPanel(
       controller: bottomPanelController,
-      maxHeight: lenght.value,
+      maxHeight: wayPoints.length == 2 && isTyping == false
+          ? height * 0.75
+          : wayPoints.length == 3 && isTyping == false
+              ? height * 0.7375
+              : wayPoints.length == 4 && isTyping == false
+                  ? height * 0.675
+                  : height * 0.375,
       slideDirection: SlideDirection.UP,
       header: isWriting == false
           ? Row(
@@ -106,27 +121,58 @@ class BottomPanel extends HookConsumerWidget {
           : null,
       color: ThemeData.dark().colorScheme.onSecondary,
       panel: isWriting
-          ? ListView.builder(
-              itemCount: _suggestions.value.length,
-              itemBuilder: (context, index) {
-                final suggestion = _suggestions.value[index];
-                return InkWell(
-                  onTap: () {
-                    textController.text = suggestion.address?.streetName ??
-                        suggestion.address?.country ??
-                        "null";
-                  },
-                  child: Container(
-                    margin: EdgeInsets.all(2),
-                    color: Color.fromARGB(255, 120, 29, 29),
-                    child: Text(
-                      "Name: ${suggestion.address?.streetName ?? ''} Munipacity: ${suggestion.address?.municipality ?? ''} POSITION: Lat: ${suggestion.position?.lat ?? ''} Lon: ${suggestion.position?.lon ?? ''}" ??
-                          suggestion.address?.country ??
-                          "null",
-                    ),
-                  ),
-                );
-              })
+          ? Padding(
+              padding: EdgeInsets.only(
+                  top: wayPoints.length == 2
+                      ? 35
+                      : wayPoints.length == 3
+                          ? 70
+                          : 105),
+              child: ListView.builder(
+                  itemCount: _suggestions.value.length,
+                  itemBuilder: (context, index) {
+                    final suggestion = _suggestions.value[index];
+                    return Card(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.black, width: 1),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: ListTile(
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.black, width: 1),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        trailing: Icon(Icons.arrow_back),
+                        leading: Icon(Icons.location_on),
+                        onTap: () {
+                          ref
+                              .read(wayPointControllerProvider.notifier)
+                              .addStart(
+                                  wayPointId: wayPoints
+                                      .where((element) =>
+                                          element.index ==
+                                          ref.read(focusNumberProvider))
+                                      .toList()[0]
+                                      .id,
+                                  localization: GeoPoint(
+                                      suggestion.position!.lat!,
+                                      suggestion.position!.lon!));
+                          ref.read(focusNumberProvider.notifier).state++;
+                          // ref.read(textValueProvider.notifier).state =
+                          //     "${suggestion.address?.municipality}, ${suggestion.address?.streetName}, ${suggestion.address?.streetNumber}, ${suggestion.address?.municipalitySubdivision}";
+
+                          if (ref.read(focusNumberProvider.notifier).state ==
+                              4) {
+                            null;
+                          }
+                        },
+                        title: Text("${suggestion.address?.municipality}"),
+                        subtitle: Text(
+                            "${suggestion.address?.streetName}, ${suggestion.address?.streetNumber}, ${suggestion.address?.municipalitySubdivision}"),
+                      ),
+                    );
+                  }),
+            )
           : Padding(
               padding: const EdgeInsets.only(top: 25),
               child: Column(

@@ -20,6 +20,8 @@ import 'package:take_me_there_app/domain/models/ride_model.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_controller.dart';
 import 'package:take_me_there_app/features/pages/home_page/search_bar_widget.dart';
 import 'package:take_me_there_app/features/pages/home_page/sliding_panel.dart';
+import 'package:take_me_there_app/features/pages/home_page/widgets/bottom_panel.dart';
+import 'package:take_me_there_app/features/pages/home_page/widgets/top_panel.dart';
 import 'package:take_me_there_app/map_config/google_maps_dependecy.dart';
 import 'package:take_me_there_app/providers/is_writing_provider.dart';
 
@@ -84,6 +86,7 @@ class HomePage extends HookConsumerWidget {
 
     void startWritingPanels() {
       // ref.read(isWritingProvider.notifier).state = true;
+
       bottomPanelController.open();
       topPanelController.open();
     }
@@ -342,172 +345,10 @@ class HomePage extends HookConsumerWidget {
                   : Set<Polyline>.of(polylinesStateT.value.values),
             ),
           ),
-          TopPanel(width: width, height: height),
           BottomPanel(height: height, isWriting: isWriting, width: width),
+          TopPanel(width: width, height: height),
         ],
       ),
-    );
-  }
-}
-
-class TopPanel extends HookConsumerWidget {
-  const TopPanel({
-    super.key,
-    required this.width,
-    required this.height,
-  });
-
-  final double width;
-
-  final double height;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final topPanelController = ref.watch(topPanelControllerProvider);
-    final textController = ref.watch(destinationTextControllerProvider);
-
-    return SlidingUpPanel(
-      isDraggable: false,
-      footer: Row(
-        children: [
-          SizedBox(
-            width: width * 0.9,
-          ),
-          IconButton(
-              onPressed: () {
-                ref.read(isWritingProvider.notifier).state = false;
-              },
-              icon: Icon(Icons.cancel))
-        ],
-      ),
-      minHeight: 0,
-      defaultPanelState: PanelState.CLOSED,
-      controller: topPanelController,
-      maxHeight: height * 0.25,
-      slideDirection: SlideDirection.DOWN,
-      color: ThemeData.dark().colorScheme.onSecondary,
-      borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(25), topRight: Radius.circular(25)),
-      panel: Padding(
-        padding: const EdgeInsets.only(top: 60),
-        child: Column(
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height * 0.065,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(width: 2, color: Colors.white)),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      onSubmitted: (value) {
-                        ref.read(isTypingProvider.notifier).state = false;
-                      },
-                      onTap: () {
-                        ref.read(isTypingProvider.notifier).state = true;
-                      },
-                      controller: textController,
-                      decoration: InputDecoration(
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.all(4),
-                          isDense: true,
-                          hintText: "Where to pick you up?"),
-                    ),
-                  ),
-                  IconButton(
-                      iconSize: 20,
-                      onPressed: () {},
-                      icon: Icon(Icons.my_location))
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class BottomPanel extends HookConsumerWidget {
-  const BottomPanel({
-    super.key,
-    required this.height,
-    required this.isWriting,
-    required this.width,
-  });
-
-  final double height;
-  final bool isWriting;
-  final double width;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final bottomPanelController = ref.watch(bottomPanelControllerProvider);
-    final isTyping = ref.watch(isTypingProvider);
-
-    return SlidingUpPanel(
-      maxHeight: height * 0.75,
-      controller: bottomPanelController,
-      slideDirection: SlideDirection.UP,
-      header: isWriting == false
-          ? Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SizedBox(
-                  width: width * 0.4,
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: width * 0.02, bottom: width * 0.02),
-                  height: height * 0.01,
-                  width: width * 0.2,
-                  decoration: BoxDecoration(
-                      color: Color.fromARGB(115, 158, 158, 158),
-                      borderRadius: BorderRadius.circular(width * 0.01)),
-                ),
-                SizedBox(
-                  width: width * 0.4,
-                ),
-              ],
-            )
-          : null,
-      color: ThemeData.dark().colorScheme.onSecondary,
-      panel: isWriting
-          ? SizedBox.shrink()
-          : Padding(
-              padding: const EdgeInsets.only(top: 25),
-              child: Column(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      ref.read(isWritingProvider.notifier).state = true;
-                    },
-                    child: Container(
-                      height: height * 0.065,
-                      width: width * 0.9,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(width: 2, color: Colors.white)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Icon(Icons.search),
-                          Text("Where do you want to go"),
-                          IconButton.filled(
-                              iconSize: 20,
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.my_location,
-                                color: Colors.white,
-                              ))
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_hooks_bloc/flutter_hooks_bloc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:take_me_there_app/features/pages/home_page/home_state.dart';
 import 'package:take_me_there_app/providers/auth_provider.dart';
@@ -21,6 +23,10 @@ class WayPointController extends StateNotifier<HomeState> {
     await ref
         .read(authDataSourceProvider)
         .deleteWayPoint(wayPointId: wayPointId);
+  }
+
+  void addStart({required String wayPointId, required GeoPoint localization}) async {
+    await ref.read(authDataSourceProvider).addStart(localization: localization, wayPointId: wayPointId);
   }
 
   void addWayPoint({

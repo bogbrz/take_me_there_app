@@ -74,7 +74,7 @@ class TopPanel extends HookConsumerWidget {
                       onPressed: wayPoints.length >= 4
                           ? null
                           : () {
-                              heightMultiplayer.value += 0.0625;
+                              heightMultiplayer.value += 0.07;
 
                               ref
                                   .read(wayPointControllerProvider.notifier)
@@ -87,12 +87,13 @@ class TopPanel extends HookConsumerWidget {
                 child: ListView.builder(
                   itemCount: wayPoints.length,
                   itemBuilder: (context, index) {
+                    print("WAYPOINTS : $wayPoints");
                     final wayPoint = wayPoints[index];
                     return wayPoint.index == 2 || wayPoint.index == 3
                         ? Dismissible(
-                            key: ValueKey(wayPoint.id),
+                            key: ValueKey(wayPoint.index),
                             onDismissed: (direction) {
-                              heightMultiplayer.value -= 0.0625;
+                              heightMultiplayer.value -= 0.07;
                               ref
                                   .read(wayPointControllerProvider.notifier)
                                   .removeWayPoint(wayPointId: wayPoint.id);
@@ -121,7 +122,8 @@ class TextFieldWidget extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final _suggestions = useState<List<Result>>([]);
     final places = ref.watch(suggestionControllerProvider.notifier);
-
+    final focusNode = FocusNode();
+    final focusNumber = ref.watch(focusNumberProvider);
     void suggestionList(String address) async {
       final listOfResults = await places.getSuggestions(address: address);
       if (listOfResults == null) {
@@ -135,8 +137,16 @@ class TextFieldWidget extends HookConsumerWidget {
       }
     }
 
+    ref.listen(focusNumberProvider, (previous, next) {
+      if (next == wayPointModel.index) {
+        focusNode.requestFocus();
+      } else {
+        focusNode.removeListener(() {});
+      }
+    });
+
     double width = DeviceSize(context).width;
-    final textController = ref.watch(destinationTextControllerProvider);
+    final textController = useTextEditingController();
     return Expanded(
       child: Container(
         margin: EdgeInsets.all(8),
@@ -149,18 +159,21 @@ class TextFieldWidget extends HookConsumerWidget {
           children: [
             Expanded(
               child: TextField(
+                autofocus: wayPointModel.index == 1 ? true : false,
+                focusNode: wayPointModel.index != 1 ? focusNode : null,
                 onChanged: (value) {
-                  suggestionList(value);
-                  ref
-                          .read(destinationTextControllerProvider.notifier)
-                          .state
-                          .text ==
-                      value;
+                  ref.read(textValueProvider.notifier).state = value;
+                  ref.read(searchingProvider.notifier).state = true;
                 },
                 onSubmitted: (value) {
-                  ref.read(isTypingProvider.notifier).state = false;
+                  // ref.read(isTypingProvider.notifier).state = false;
 
-                  ref.read(isWritingProvider.notifier).state = false;
+                  // ref.read(isWritingProvider.notifier).state = false;
+                  if (ref.read(focusNumberProvider.notifier).state == 4) {
+                    null;
+                  } 
+                    ref.read(focusNumberProvider.notifier).state++;
+                
                 },
                 onTap: () {
                   // ref.read(isTypingProvider.notifier).state = true;

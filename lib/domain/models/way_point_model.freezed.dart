@@ -16,8 +16,8 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$WayPointModel {
-  String get start => throw _privateConstructorUsedError;
-  String get destination => throw _privateConstructorUsedError;
+  GeoPoint get start => throw _privateConstructorUsedError;
+  GeoPoint get destination => throw _privateConstructorUsedError;
   String get id => throw _privateConstructorUsedError;
   int get index => throw _privateConstructorUsedError;
 
@@ -32,7 +32,7 @@ abstract class $WayPointModelCopyWith<$Res> {
           WayPointModel value, $Res Function(WayPointModel) then) =
       _$WayPointModelCopyWithImpl<$Res, WayPointModel>;
   @useResult
-  $Res call({String start, String destination, String id, int index});
+  $Res call({GeoPoint start, GeoPoint destination, String id, int index});
 }
 
 /// @nodoc
@@ -57,11 +57,11 @@ class _$WayPointModelCopyWithImpl<$Res, $Val extends WayPointModel>
       start: null == start
           ? _value.start
           : start // ignore: cast_nullable_to_non_nullable
-              as String,
+              as GeoPoint,
       destination: null == destination
           ? _value.destination
           : destination // ignore: cast_nullable_to_non_nullable
-              as String,
+              as GeoPoint,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -82,7 +82,7 @@ abstract class _$$WayPointModelImplCopyWith<$Res>
       __$$WayPointModelImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String start, String destination, String id, int index});
+  $Res call({GeoPoint start, GeoPoint destination, String id, int index});
 }
 
 /// @nodoc
@@ -105,11 +105,11 @@ class __$$WayPointModelImplCopyWithImpl<$Res>
       start: null == start
           ? _value.start
           : start // ignore: cast_nullable_to_non_nullable
-              as String,
+              as GeoPoint,
       destination: null == destination
           ? _value.destination
           : destination // ignore: cast_nullable_to_non_nullable
-              as String,
+              as GeoPoint,
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -132,9 +132,9 @@ class _$WayPointModelImpl implements _WayPointModel {
       required this.index});
 
   @override
-  final String start;
+  final GeoPoint start;
   @override
-  final String destination;
+  final GeoPoint destination;
   @override
   final String id;
   @override
@@ -169,15 +169,15 @@ class _$WayPointModelImpl implements _WayPointModel {
 
 abstract class _WayPointModel implements WayPointModel {
   factory _WayPointModel(
-      {required final String start,
-      required final String destination,
+      {required final GeoPoint start,
+      required final GeoPoint destination,
       required final String id,
       required final int index}) = _$WayPointModelImpl;
 
   @override
-  String get start;
+  GeoPoint get start;
   @override
-  String get destination;
+  GeoPoint get destination;
   @override
   String get id;
   @override

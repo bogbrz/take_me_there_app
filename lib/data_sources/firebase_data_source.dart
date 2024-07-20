@@ -61,8 +61,24 @@ class AuthDataSource {
           .collection("newUsers")
           .doc(currentUser!.uid)
           .collection("wayPoints")
-          .add({"index": i, "start": "nowhere", "destination": "shitwhere"});
+          .add({
+        "index": i,
+        "start": GeoPoint(0, 0),
+        "destination": GeoPoint(0, 0)
+      });
     }
+  }
+
+  Future<void> addStart(
+      {required String wayPointId, required GeoPoint localization}) async {
+    return dataBase
+        .collection("newUsers")
+        .doc(currentUser!.uid)
+        .collection("wayPoints")
+        .doc(wayPointId)
+        .update({
+          "start" : localization
+        });
   }
 
   Future<void> addWayPoint({required int index}) async {
@@ -70,11 +86,15 @@ class AuthDataSource {
         .collection("newUsers")
         .doc(currentUser!.uid)
         .collection("wayPoints")
-        .add({"index": index, "start": "nowhere", "destination": "shitwhere"});
+        .add({
+      "index": index,
+      "start": GeoPoint(0, 0),
+      "destination": GeoPoint(0, 0)
+    });
   }
 
   Future<void> deleteWayPoint({required String wayPointId}) async {
-    await dataBase
+    return dataBase
         .collection("newUsers")
         .doc(currentUser!.uid)
         .collection("wayPoints")
